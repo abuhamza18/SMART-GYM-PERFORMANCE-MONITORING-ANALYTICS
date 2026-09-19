@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>History - Smart Gym</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <div class="nav-container">
+      <a href="dashboard.html" class="logo">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="color: var(--secondary-color);">
+          <line x1="18" y1="20" x2="18" y2="10"></line>
+          <line x1="12" y1="20" x2="12" y2="4"></line>
+          <line x1="6" y1="20" x2="6" y2="14"></line>
+        </svg>
+        SmartGym <span>Telemetry</span>
+      </a>
+      <nav>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="history.html" class="active">History</a>
+        <a href="analytics.html">Analytics</a>
+        <a href="profile.html">Profile</a>
+      </nav>
+      <div class="user-badge">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+        User: <strong id="username-display">Loading...</strong>
+        <button id="logout-btn" class="btn-logout" title="Log Out">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="glass-panel">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <div>
+          <h2>Workout History Log</h2>
+          <p style="font-size: 14px; color: var(--text-secondary); margin-top: 4px;">Comprehensive log of all completed workouts</p>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table id="history-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Exercise</th>
+              <th>Sets</th>
+              <th>Reps</th>
+              <th>Weight</th>
+              <th>Calories Burned</th>
+              <th>Duration</th>
+            </tr>
+          </thead>
+          <tbody id="history-table-body">
+            <tr>
+              <td colspan="7" style="text-align: center; color: var(--text-secondary);">Loading your workout history...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const token = localStorage.getItem('gym_token');
+    const username = localStorage.getItem('gym_username') || 'Guest';
+
+    if (!token) {
+      window.location.href = '/login.html';
+    }
+
+    document.getElementById('username-display').textContent = username;
+
+    document.getElementById('logout-btn').addEventListener('click', () => {
+      localStorage.removeItem('gym_token');
+      localStorage.removeItem('gym_username');
+      window.location.href = '/login.html';
+    });
+
+    async function loadWorkoutHistory() {
+      const tableBody = document.getElementById('history-table-body');
+      
+      try {
+        const response = await fetch('/api/workouts', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) throw new Error('Failed to fetch history data');
+
+        const workouts = await response.json();
+        tableBody.innerHTML = '';
+
+        if (workouts.length === 0) {
+          tableBody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-secondary); padding: 40px 0;">No workouts logged yet. Start a session from the Dashboard!</td></tr>`;
+          return;
+        }
+
+        workouts.forEach((w) => {
+          // Format Date to localized string
+          const dateObj = new Date(w.date);
+          const formattedDate = dateObj.toLocaleDateString(undefined, { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+          });
+
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${formattedDate}</td>
+            <td><strong>${w.exercise}</strong></td>
+            <td>${w.sets}</td>
+            <td>${w.reps}</td>
+            <td>${w.weight} kg</td>
+            <td><span style="color: var(--secondary-color); font-weight: 600;">${w.calories.toFixed(1)}</span> kcal</td>
+            <td>${w.duration}</td>
+          `;
+          tableBody.appendChild(tr);
+        });
+      } catch (err) {
+        tableBody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--danger-color); padding: 40px 0;">Error loading workout logs: ${err.message}</td></tr>`;
+      }
+    }
+
+    loadWorkoutHistory();
+  </script>
+</body>
+</html>

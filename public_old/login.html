@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Smart Gym Performance</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="auth-wrapper">
+    <div class="glass-panel auth-card">
+      <div class="auth-header">
+        <h2 id="auth-title">Welcome Back</h2>
+        <p id="auth-subtitle">Login to monitor your workout performance</p>
+      </div>
+
+      <div id="alert-container"></div>
+
+      <form id="auth-form">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" class="form-input" placeholder="e.g. Mohamed" required autocomplete="username">
+        </div>
+
+        <div class="form-group" id="email-group" style="display: none;">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" class="form-input" placeholder="mohamed@example.com" autocomplete="email">
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" class="form-input" placeholder="••••••••" required autocomplete="current-password">
+        </div>
+
+        <button type="submit" id="submit-btn" class="btn btn-primary" style="width: 100%; margin-top: 10px;">
+          Log In
+        </button>
+      </form>
+
+      <div class="auth-footer">
+        <span id="footer-text">Don't have an account?</span>
+        <a href="#" id="toggle-auth">Sign Up</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('auth-form');
+    const title = document.getElementById('auth-title');
+    const subtitle = document.getElementById('auth-subtitle');
+    const emailGroup = document.getElementById('email-group');
+    const submitBtn = document.getElementById('submit-btn');
+    const toggleAuth = document.getElementById('toggle-auth');
+    const footerText = document.getElementById('footer-text');
+    const alertContainer = document.getElementById('alert-container');
+
+    let isLogin = true;
+
+    // Check if already logged in
+    if (localStorage.getItem('gym_token')) {
+      window.location.href = '/dashboard.html';
+    }
+
+    toggleAuth.addEventListener('click', (e) => {
+      e.preventDefault();
+      isLogin = !isLogin;
+      alertContainer.innerHTML = '';
+      
+      if (isLogin) {
+        title.textContent = 'Welcome Back';
+        subtitle.textContent = 'Login to monitor your workout performance';
+        emailGroup.style.display = 'none';
+        submitBtn.textContent = 'Log In';
+        footerText.textContent = "Don't have an account?";
+        toggleAuth.textContent = 'Sign Up';
+        document.getElementById('email').removeAttribute('required');
+      } else {
+        title.textContent = 'Create Account';
+        subtitle.textContent = 'Register to track your gym stats in real time';
+        emailGroup.style.display = 'block';
+        submitBtn.textContent = 'Register';
+        footerText.textContent = 'Already have an account?';
+        toggleAuth.textContent = 'Log In';
+        document.getElementById('email').setAttribute('required', 'true');
+      }
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      alertContainer.innerHTML = '';
+
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+      const email = document.getElementById('email').value.trim();
+
+      const endpoint = isLogin ? '/api/login' : '/api/register';
+      const payload = isLogin ? { username, password } : { username, password, email };
+
+      try {
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || 'Authentication failed');
+        }
+
+        if (isLogin) {
+          localStorage.setItem('gym_token', data.token);
+          localStorage.setItem('gym_username', data.username);
+          window.location.href = '/dashboard.html';
+        } else {
+          alertContainer.innerHTML = `<div class="alert alert-success">Registration successful! Please log in.</div>`;
+          isLogin = true;
+          toggleAuth.click(); // Switch back to login page
+        }
+      } catch (err) {
+        alertContainer.innerHTML = `<div class="alert alert-danger">${err.message}</div>`;
+      }
+    });
+  </script>
+</body>
+</html>

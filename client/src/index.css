@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-gym-dark text-gym-text font-sans antialiased overflow-x-hidden;
+    background-image: radial-gradient(circle at 40% 10%, rgba(16, 185, 129, 0.04), transparent 45%),
+                      radial-gradient(circle at 80% 80%, rgba(14, 165, 233, 0.04), transparent 45%);
+    background-attachment: fixed;
+  }
+}
+
+/* Reusable mechatronics classes */
+.glass-panel {
+  @apply bg-gym-card/50 backdrop-blur-lg border border-gym-border rounded-2xl shadow-xl shadow-black/20;
+}
+
+.glass-panel-interactive {
+  @apply transition-all duration-300 hover:border-gym-accent/30 hover:bg-gym-card/70 hover:-translate-y-0.5 hover:shadow-gym-accent/5;
+}
+
+.neon-glow-green {
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.15);
+}
+
+.neon-glow-blue {
+  box-shadow: 0 0 20px rgba(14, 165, 233, 0.15);
+}
+
+.glow-text-green {
+  text-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+}
+
+.glow-text-blue {
+  text-shadow: 0 0 10px rgba(14, 165, 233, 0.5);
+}
+
+.glow-text-yellow {
+  text-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+}
+
+.glow-text-red {
+  text-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+}
+
+/* Hide standard scrollbars and add tech styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-gym-dark;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-gym-border rounded-full border border-gym-dark/50 hover:bg-gym-muted/30 transition-colors;
+}
+
+/* Custom grid display background */
+.tech-grid-bg {
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, rgba(30, 41, 59, 0.15) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(30, 41, 59, 0.15) 1px, transparent 1px);
+}
