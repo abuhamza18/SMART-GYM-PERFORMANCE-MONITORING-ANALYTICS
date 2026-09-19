@@ -1,12 +1,28 @@
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
-const dbPath = path.join(__dirname, 'gym.db');
+const fs = require('fs');
+
+let dbPath = path.join(__dirname, 'gym.db');
+
+// Handle Vercel serverless read-only filesystem by using /tmp/gym.db
+if (process.env.VERCEL || process.env.NOW_BUILDER) {
+  const tmpPath = path.join('/tmp', 'gym.db');
+  try {
+    if (!fs.existsSync(tmpPath) && fs.existsSync(dbPath)) {
+      fs.copyFileSync(dbPath, tmpPath);
+    }
+    dbPath = tmpPath;
+  } catch (e) {
+    console.warn('Vercel copy db warning, using /tmp/gym.db:', e);
+    dbPath = tmpPath;
+  }
+}
 
 const db = new sqlite3.Database(dbPath, (err) => {
   if (err) {
     console.error('Error opening database:', err);
   } else {
-    console.log('Connected to SQLite database.');
+    console.log('Connected to SQLite database at:', dbPath);
     initDb();
   }
 });

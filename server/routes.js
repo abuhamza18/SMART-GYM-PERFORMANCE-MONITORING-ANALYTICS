@@ -4,7 +4,13 @@ const jwt = require('jsonwebtoken');
 const db = require('./database');
 const router = express.Router();
 
-const JWT_SECRET = 'smart-gym-super-secret-key-2026';
+const JWT_SECRET = process.env.JWT_SECRET || 'smart-gym-super-secret-key-2026';
+
+// Middleware to set JSON response header
+router.use((req, res, next) => {
+  res.setHeader('Content-Type', 'application/json');
+  next();
+});
 
 // Middleware to verify JWT token
 function authenticateToken(req, res, next) {
@@ -24,7 +30,7 @@ function authenticateToken(req, res, next) {
 router.post('/register', (req, res) => {
   const { username, password, email } = req.body;
   if (!username || !password) {
-    return res.status(404).json({ error: 'Username and password are required' });
+    return res.status(400).json({ error: 'Username and password are required' });
   }
 
   const hashedPassword = bcrypt.hashSync(password, 10);
