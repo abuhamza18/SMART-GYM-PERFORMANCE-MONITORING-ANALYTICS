@@ -10,11 +10,18 @@
     "simulator": "node server/esp32_simulator.js",
     "reset-db": "node server/reset_db.js"
   },
+  "workspaces": [
+    "client"
+  ],
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
     "sqlite3": "^5.1.7",
     "ws": "^8.16.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.2.2",
+    "vite": "^5.1.4"
   }
 }
