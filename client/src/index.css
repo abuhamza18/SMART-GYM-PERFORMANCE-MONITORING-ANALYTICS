@@ -1,65 +1,416 @@
+/* ── Google Fonts (must precede all other rules) ──────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Orbitron:wght@400;500;600;700;800;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* =========================================================
+   SMART GYM: BOLD BLACK + ORANGE THEME
+   ========================================================= */
+
+:root {
+  --bg-main: #0B0B0D;
+  --bg-sidebar: #111114;
+  --bg-card: #1A1A1F;
+  --bg-card-secondary: #222228;
+  --accent-orange: #FF7A00;
+  --accent-hover: #E65C00;
+  --border-subtle: #303036;
+  --text-main: #F5F5F5;
+  --text-muted: #A1A1AA;
+
+  --accent-blue: #38BDF8;
+  --accent-yellow: #FACC15;
+  --accent-red: #FF4D5A;
+}
+
+/* 1. Main Background & Base Text */
+html, body, #root, #__next {
+  background-color: #0B0B0D !important;
+  color: #F5F5F5 !important;
+}
+
 @layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
-    @apply bg-gym-dark text-gym-text font-sans antialiased overflow-x-hidden;
-    background-image: radial-gradient(circle at 40% 10%, rgba(16, 185, 129, 0.04), transparent 45%),
-                      radial-gradient(circle at 80% 80%, rgba(14, 165, 233, 0.04), transparent 45%);
+    @apply font-sans antialiased overflow-x-hidden;
+    background-color: #0B0B0D !important;
+    color: #F5F5F5 !important;
+    background-image:
+      radial-gradient(ellipse at 15% 10%, rgba(255, 122, 0, 0.05) 0%, transparent 50%),
+      radial-gradient(ellipse at 85% 90%, rgba(255, 122, 0, 0.03) 0%, transparent 50%);
     background-attachment: fixed;
+    min-height: 100vh;
   }
 }
 
-/* Reusable mechatronics classes */
+/* 2. Sidebars, Navigation & Headers */
+nav, aside, header {
+  background-color: #111114 !important;
+  border-color: #303036 !important;
+}
+
+/* 3. Cards, Containers, Modals & Dropdowns */
+.card, [class*="card"], 
+.modal, [class*="modal"], 
+[class*="bg-white"], [class*="bg-slate-50"], [class*="bg-gray-50"],
+[class*="bg-slate-100"], [class*="bg-gray-100"], [class*="bg-slate-800"] {
+  background-color: #1A1A1F !important;
+  border-color: #303036 !important;
+  color: #F5F5F5 !important;
+}
+
+/* 4. Form Inputs, Select Boxes, and Textareas */
+input, select, textarea {
+  background-color: #222228 !important;
+  border: 1px solid #303036 !important;
+  color: #F5F5F5 !important;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: #FF7A00 !important;
+  outline: none !important;
+  box-shadow: 0 0 0 1px #FF7A00, 0 0 12px rgba(255, 122, 0, 0.20) !important;
+}
+
+/* 5. Primary Buttons & Highlights */
+button[type="submit"]:not(.auth-btn-primary), 
+.btn-primary, 
+[class*="bg-emerald"], [class*="bg-green-600"], [class*="bg-blue-600"] {
+  background-color: #FF7A00 !important;
+  color: #0B0B0D !important;
+  font-weight: 700 !important;
+  border: none !important;
+  transition: all 0.2s ease-in-out !important;
+}
+
+button[type="submit"]:not(.auth-btn-primary):hover, 
+.btn-primary:hover, 
+[class*="bg-emerald"]:hover, [class*="bg-green-600"]:hover, [class*="bg-blue-600"]:hover {
+  background-color: #E65C00 !important;
+  box-shadow: 0 0 16px rgba(255, 122, 0, 0.40) !important;
+}
+
+/* Auth Primary Button with Gradient and Glow */
+.auth-btn-primary {
+  background: linear-gradient(135deg, #FF7A00 0%, #FF5500 100%) !important;
+  color: #0B0B0D !important;
+  font-weight: 800 !important;
+  box-shadow: 0 5px 22px rgba(255, 122, 0, 0.38), 0 0 0 1px rgba(255, 122, 0, 0.35) !important;
+}
+
+.auth-btn-primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #FF8C1A 0%, #E65C00 100%) !important;
+  box-shadow: 0 8px 32px rgba(255, 122, 0, 0.6), 0 0 20px rgba(255, 122, 0, 0.4) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* 6. Typography adjustments for headings and secondary text */
+h1, h2, h3, h4, h5, h6 {
+  color: #F5F5F5 !important;
+}
+
+p, span, label, small {
+  color: inherit;
+}
+
+.text-muted, [class*="text-gray-500"], [class*="text-slate-400"] {
+  color: #A1A1AA !important;
+}
+
+/* 7. Borders & Dividers */
+hr, [class*="border-gray"], [class*="border-slate"] {
+  border-color: #303036 !important;
+}
+
+/* 8. Status colors */
+.status-connected, [class*="bg-green-500"] {
+  background-color: #FF7A00 !important;
+}
+
+/* ── Scrollbars ─────────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #0B0B0D; }
+::-webkit-scrollbar-thumb {
+  background: #303036;
+  border-radius: 99px;
+  border: 1px solid rgba(0,0,0,0.4);
+}
+::-webkit-scrollbar-thumb:hover { background: #3f3f47; }
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ── Auth System Components ─────────────────────────────────────────────────── */
+.auth-page-root {
+  background-color: #0B0B0D !important;
+  background-image:
+    radial-gradient(ellipse at 15% 20%, rgba(255, 122, 0, 0.08) 0%, transparent 45%),
+    radial-gradient(ellipse at 85% 80%, rgba(255, 122, 0, 0.04) 0%, transparent 45%) !important;
+  color: #F5F5F5 !important;
+  min-height: 100vh;
+}
+
+.auth-card {
+  background-color: #1A1A1F !important;
+  border: 1px solid #303036 !important;
+  border-radius: 16px !important;
+  box-shadow: 0 8px 48px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 122, 0, 0.08) !important;
+  animation: fadeInCard 0.35s ease-out;
+}
+
+@keyframes fadeInCard {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.auth-input {
+  width: 100%;
+  padding: 12px 14px 12px 42px;
+  font-size: 14px;
+  color: #F5F5F5 !important;
+  background: #222228 !important;
+  border: 1.5px solid #303036 !important;
+  border-radius: 10px !important;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+
+.auth-input:focus {
+  border-color: #FF7A00 !important;
+  box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.20) !important;
+}
+
+.auth-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #A1A1AA !important;
+  margin-bottom: 7px;
+  font-family: 'Inter', sans-serif;
+}
+
+.auth-btn-primary {
+  width: 100%;
+  padding: 13px 20px;
+  background: #FF7A00 !important;
+  color: #0B0B0D !important;
+  border: none !important;
+  border-radius: 10px !important;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+  font-family: 'Inter', sans-serif;
+  box-shadow: 0 4px 20px rgba(255, 122, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.auth-btn-primary:hover:not(:disabled) {
+  background: #E65C00 !important;
+  box-shadow: 0 6px 28px rgba(255, 122, 0, 0.55) !important;
+  transform: translateY(-1px);
+}
+
+.auth-btn-primary:active:not(:disabled) {
+  background: #cc5200 !important;
+  transform: translateY(0);
+}
+
+.auth-btn-primary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.auth-link {
+  color: #FF7A00 !important;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.auth-link:hover {
+  color: #E65C00 !important;
+  text-decoration: underline;
+}
+
+.auth-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 13px 15px;
+  background: rgba(255, 77, 90, 0.12) !important;
+  border: 1px solid rgba(255, 77, 90, 0.40) !important;
+  border-radius: 10px !important;
+  color: #FF4D5A !important;
+  margin-bottom: 20px;
+}
+
+.auth-success {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 13px 15px;
+  background: rgba(255, 122, 0, 0.12) !important;
+  border: 1px solid rgba(255, 122, 0, 0.35) !important;
+  border-radius: 10px !important;
+  color: #FF7A00 !important;
+  margin-bottom: 20px;
+}
+
+/* ── Glass Panels & Cards ─────────────────────────────────────────────────── */
 .glass-panel {
-  @apply bg-gym-card/50 backdrop-blur-lg border border-gym-border rounded-2xl shadow-xl shadow-black/20;
+  background: #1A1A1F !important;
+  border: 1px solid #303036 !important;
+  border-radius: 18px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  position: relative;
+}
+
+.glass-panel:hover {
+  border-color: rgba(255, 122, 0, 0.25) !important;
 }
 
 .glass-panel-interactive {
-  @apply transition-all duration-300 hover:border-gym-accent/30 hover:bg-gym-card/70 hover:-translate-y-0.5 hover:shadow-gym-accent/5;
+  background: #1A1A1F !important;
+  border: 1px solid #303036 !important;
+  border-radius: 18px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  cursor: pointer;
 }
 
-.neon-glow-green {
-  box-shadow: 0 0 20px rgba(16, 185, 129, 0.15);
+.glass-panel-interactive:hover {
+  border-color: rgba(255, 122, 0, 0.45) !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.7), 0 0 20px rgba(255, 122, 0, 0.15) !important;
+  transform: translateY(-2px);
 }
 
-.neon-glow-blue {
-  box-shadow: 0 0 20px rgba(14, 165, 233, 0.15);
+/* ── Stat Card Styling ──────────────────────────────────────────────────────── */
+.stat-card {
+  background: linear-gradient(180deg, #1A1A1F 0%, #151519 100%) !important;
+  border: 1px solid #303036 !important;
+  border-radius: 16px !important;
+  padding: 18px 20px !important;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45) !important;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  position: relative;
+  overflow: hidden;
 }
 
-.glow-text-green {
-  text-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+.stat-card:hover {
+  border-color: rgba(255, 122, 0, 0.35) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.65), 0 0 16px rgba(255, 122, 0, 0.12) !important;
 }
 
-.glow-text-blue {
-  text-shadow: 0 0 10px rgba(14, 165, 233, 0.5);
+/* ── Modern Buttons ─────────────────────────────────────────────────────────── */
+.btn-primary-orange {
+  background: linear-gradient(135deg, #FF7A00 0%, #FF5500 100%) !important;
+  color: #0B0B0D !important;
+  font-weight: 800 !important;
+  border: none !important;
+  border-radius: 12px !important;
+  padding: 12px 20px !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 13.5px !important;
+  letter-spacing: 0.02em !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  cursor: pointer !important;
+  box-shadow: 0 4px 18px rgba(255, 122, 0, 0.35) !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
-.glow-text-yellow {
-  text-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+.btn-primary-orange:hover:not(:disabled) {
+  background: linear-gradient(135deg, #FF8C1A 0%, #E65C00 100%) !important;
+  box-shadow: 0 6px 26px rgba(255, 122, 0, 0.55), 0 0 12px rgba(255, 122, 0, 0.3) !important;
+  transform: translateY(-1.5px) !important;
 }
 
-.glow-text-red {
-  text-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+.btn-primary-orange:active:not(:disabled) {
+  transform: translateY(1px) scale(0.99) !important;
+  box-shadow: 0 2px 8px rgba(255, 122, 0, 0.3) !important;
 }
 
-/* Hide standard scrollbars and add tech styling */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-::-webkit-scrollbar-track {
-  @apply bg-gym-dark;
-}
-::-webkit-scrollbar-thumb {
-  @apply bg-gym-border rounded-full border border-gym-dark/50 hover:bg-gym-muted/30 transition-colors;
+.btn-secondary-dark {
+  background: #222228 !important;
+  border: 1px solid #303036 !important;
+  color: #F5F5F5 !important;
+  font-weight: 600 !important;
+  border-radius: 12px !important;
+  padding: 11px 18px !important;
+  font-size: 13px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
 }
 
-/* Custom grid display background */
+.btn-secondary-dark:hover:not(:disabled) {
+  background: #2A2A32 !important;
+  border-color: rgba(255, 122, 0, 0.4) !important;
+  color: #FF7A00 !important;
+  transform: translateY(-1px) !important;
+}
+
+/* ── Orange Glow Utilities ───────────────────────────────────────────────────── */
+.neon-glow-orange { box-shadow: 0 0 24px rgba(255, 122, 0, 0.28); }
+.neon-glow-green  { box-shadow: 0 0 24px rgba(255, 122, 0, 0.28); } /* fallback alias */
+.neon-glow-blue   { box-shadow: 0 0 24px rgba(56, 189, 248, 0.18); }
+
+.glow-text-orange { text-shadow: 0 0 12px rgba(255, 122, 0, 0.65); }
+.glow-text-green  { text-shadow: 0 0 12px rgba(255, 122, 0, 0.65); } /* fallback alias */
+.glow-text-blue   { text-shadow: 0 0 12px rgba(56, 189, 248, 0.55); }
+.glow-text-yellow { text-shadow: 0 0 12px rgba(250, 204, 21,  0.55); }
+.glow-text-red    { text-shadow: 0 0 12px rgba(255, 77,  90,  0.55); }
+
+/* ── Tech Grid Background ────────────────────────────────────────────────────── */
 .tech-grid-bg {
   background-size: 40px 40px;
-  background-image: 
-    linear-gradient(to right, rgba(30, 41, 59, 0.15) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(30, 41, 59, 0.15) 1px, transparent 1px);
+  background-image:
+    linear-gradient(to right,  rgba(48, 48, 54, 0.22) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(48, 48, 54, 0.22) 1px, transparent 1px);
+}
+
+/* ── Select & Range controls ─────────────────────────────────────────────────── */
+select option {
+  background: #222228 !important;
+  color: #F5F5F5 !important;
+}
+
+input[type="range"] { accent-color: #FF7A00; }
+input[type="checkbox"] { accent-color: #FF7A00; }
+
+.spin { animation: spin 0.8s linear infinite; }
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
 }

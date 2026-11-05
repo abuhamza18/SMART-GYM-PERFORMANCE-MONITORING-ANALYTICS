@@ -41,35 +41,35 @@ export const LandingPage: React.FC = () => {
         <div className="flex items-center gap-3 bg-gym-accent/10 border border-gym-accent/30 py-2 px-5 rounded-full mb-6">
           <Cpu className="w-5 h-5 text-gym-accent animate-pulse-slow" />
           <span className="text-xs font-semibold tracking-wider font-display text-gym-accent uppercase">
-            Final-Year B.Tech Mechatronics Demonstration
+            Performance Monitoring & Analytics System
           </span>
         </div>
 
         <h1 className="font-display font-black text-4xl md:text-5xl lg:text-6xl tracking-wide leading-tight max-w-4xl text-gym-text">
           SMART GYM PERFORMANCE <br />
-          <span className="bg-gradient-to-r from-gym-accent via-teal-400 to-gym-accentBlue bg-clip-text text-transparent glow-text-green">
+          <span className="bg-gradient-to-r from-[#FF7A00] via-[#FFA347] to-[#FF5500] bg-clip-text text-transparent glow-text-orange">
             MONITORING & ANALYTICS
           </span>
         </h1>
 
         <p className="text-gym-muted max-w-2xl text-sm md:text-base mt-6 font-sans leading-relaxed">
-          An advanced sensor-integrated mechatronics solution combining 6-axis IMU sensors, load cell force transducers, ESP32 edge processing, and high-speed WebSockets telemetry for real-time form assessment.
+          An advanced sensor-integrated athletic solution combining 6-axis IMU sensors, load cell force transducers, ESP32 edge processing, and high-speed WebSockets telemetry for real-time form assessment.
         </p>
 
         {/* Hero Actions */}
         <div className="flex flex-col sm:flex-row gap-4 mt-10 w-full sm:w-auto">
           <button
             onClick={() => navigate('/live')}
-            className="flex items-center justify-center gap-2 bg-gym-accent hover:bg-gym-accent/90 text-gym-dark font-display font-bold px-8 py-3.5 rounded-xl shadow-lg shadow-gym-accent/20 transition-all duration-200 hover:-translate-y-0.5"
+            className="flex items-center justify-center gap-2.5 bg-gradient-to-r from-[#FF7A00] to-[#FF5500] hover:from-[#FF8C1A] hover:to-[#E65C00] text-[#0B0B0D] font-display font-bold px-8 py-4 rounded-xl shadow-lg shadow-gym-accent/30 transition-all duration-200 hover:-translate-y-1"
           >
-            <Play className="w-5 h-5 fill-gym-dark" />
+            <Play className="w-5 h-5 fill-[#0B0B0D]" />
             Start Workout Session
           </button>
           <button
             onClick={() => navigate('/dashboard')}
-            className="flex items-center justify-center gap-2 bg-gym-card hover:bg-slate-800 border border-gym-border hover:border-gym-muted/30 font-display font-bold px-8 py-3.5 rounded-xl transition-all duration-200 hover:-translate-y-0.5"
+            className="flex items-center justify-center gap-2.5 bg-[#1A1A1F] hover:bg-[#222228] border border-gym-border hover:border-gym-accent/40 font-display font-bold px-8 py-4 rounded-xl text-[#F5F5F5] hover:text-gym-accent transition-all duration-200 hover:-translate-y-1 shadow-md shadow-black/40"
           >
-            <LayoutDashboard className="w-5 h-5 text-gym-accentBlue" />
+            <LayoutDashboard className="w-5 h-5 text-gym-accent" />
             View Telemetry Dashboard
           </button>
         </div>

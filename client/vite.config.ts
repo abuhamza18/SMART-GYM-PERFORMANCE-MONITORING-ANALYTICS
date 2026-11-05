@@ -6,7 +6,8 @@ export default defineConfig({
   plugins: [react()],
   build: {
     outDir: '../public',
-    emptyOutDir: true
+    emptyOutDir: true,
+    chunkSizeWarningLimit: 1000, // suppress chunk size warning for this SPA bundle
   },
   server: {
     port: 5173,

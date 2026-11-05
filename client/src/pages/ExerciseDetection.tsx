@@ -118,59 +118,59 @@ export const ExerciseDetection: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {profiles.map((ex, idx) => (
-          <div key={idx} className="glass-panel p-6 flex flex-col justify-between glass-panel-interactive space-y-6">
+          <div key={idx} className="glass-panel p-6 flex flex-col justify-between glass-panel-interactive space-y-6 border border-gym-border">
             
             {/* Title & Icon Header */}
             <div className="flex justify-between items-start">
               <div className="flex items-center gap-3">
-                <div className={`p-3 rounded-2xl border ${ex.accentBg} ${ex.iconColor}`}>
+                <div className={`p-3 rounded-2xl border ${ex.accentBg} ${ex.iconColor} shadow-md`}>
                   <Dumbbell className="w-6 h-6" />
                 </div>
                 <div>
                   <h3 className="font-display font-bold text-lg text-gym-text tracking-wide uppercase leading-tight">
                     {ex.name}
                   </h3>
-                  <span className="text-[9px] font-mono text-gym-muted">IMU Class ID: {idx + 1}</span>
+                  <span className="text-[10px] font-mono text-gym-muted">IMU Class ID: {idx + 1}</span>
                 </div>
               </div>
 
               {ex.bestWeight > 0 && (
-                <div className="flex items-center gap-1.5 bg-gym-accentYellow/10 border border-gym-accentYellow/20 text-gym-accentYellow py-1 px-2.5 rounded-full text-[9px] font-display font-bold">
-                  <Crown className="w-3.5 h-3.5 fill-gym-accentYellow" />
+                <div className="flex items-center gap-1.5 bg-gym-accent/10 border border-gym-accent/30 text-gym-accent py-1 px-2.5 rounded-full text-[9px] font-display font-bold">
+                  <Crown className="w-3.5 h-3.5 fill-gym-accent" />
                   PERSONAL RECORD
                 </div>
               )}
             </div>
 
             {/* Performance Stats */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-gym-card/45 border border-gym-border p-3.5 rounded-xl flex items-center gap-3">
+            <div className="grid grid-cols-2 gap-3.5">
+              <div className="bg-gym-cardAlt/80 border border-gym-border p-3.5 rounded-xl flex items-center gap-3">
                 <Hash className="w-5 h-5 text-gym-accentBlue" />
                 <div>
-                  <div className="text-[9px] font-display text-gym-muted leading-none uppercase">Reps</div>
+                  <div className="text-[9px] font-display text-gym-muted leading-none uppercase font-bold">Reps</div>
                   <div className="text-sm font-bold text-gym-text mt-1">{ex.totalReps}</div>
                 </div>
               </div>
-              <div className="bg-gym-card/45 border border-gym-border p-3.5 rounded-xl flex items-center gap-3">
+              <div className="bg-gym-cardAlt/80 border border-gym-border p-3.5 rounded-xl flex items-center gap-3">
                 <Layers className="w-5 h-5 text-gym-accentYellow" />
                 <div>
-                  <div className="text-[9px] font-display text-gym-muted leading-none uppercase">Sets</div>
+                  <div className="text-[9px] font-display text-gym-muted leading-none uppercase font-bold">Sets</div>
                   <div className="text-sm font-bold text-gym-text mt-1">{ex.totalSets}</div>
                 </div>
               </div>
-              <div className="bg-gym-card/45 border border-gym-border p-3.5 rounded-xl flex items-center gap-3">
-                <Crown className="w-5 h-5 text-purple-400" />
+              <div className="bg-gym-cardAlt/80 border border-gym-border p-3.5 rounded-xl flex items-center gap-3">
+                <Crown className="w-5 h-5 text-gym-accent" />
                 <div>
-                  <div className="text-[9px] font-display text-gym-muted leading-none uppercase">Max Load</div>
+                  <div className="text-[9px] font-display text-gym-muted leading-none uppercase font-bold">Max Load</div>
                   <div className="text-sm font-bold text-gym-text mt-1">
                     {ex.bestWeight ? `${ex.bestWeight} kg` : '--'}
                   </div>
                 </div>
               </div>
-              <div className="bg-gym-card/45 border border-gym-border p-3.5 rounded-xl flex items-center gap-3">
+              <div className="bg-gym-cardAlt/80 border border-gym-border p-3.5 rounded-xl flex items-center gap-3">
                 <Award className="w-5 h-5 text-gym-accent" />
                 <div>
-                  <div className="text-[9px] font-display text-gym-muted leading-none uppercase">Avg Form</div>
+                  <div className="text-[9px] font-display text-gym-muted leading-none uppercase font-bold">Avg Form</div>
                   <div className="text-sm font-bold text-gym-text mt-1">
                     {ex.avgFormScore ? `${ex.avgFormScore}%` : '--'}
                   </div>
@@ -181,12 +181,12 @@ export const ExerciseDetection: React.FC = () => {
             {/* Micro details / Improvement */}
             {ex.totalSets > 0 ? (
               <div className="pt-3 border-t border-gym-border flex justify-between items-center text-[10px] text-gym-muted font-display">
-                <span className="flex items-center gap-1">
-                  <TrendingUp className="w-4.5 h-4.5 text-gym-accent" />
+                <span className="flex items-center gap-1.5 text-gym-accent">
+                  <TrendingUp className="w-4 h-4 text-gym-accent" />
                   Velocity up +{ex.improvementRate}%
                 </span>
-                <span className="text-[9px] uppercase font-bold text-gym-accent font-sans">
-                  Active Baseline Set
+                <span className="text-[9px] uppercase font-bold text-gym-text font-mono bg-gym-cardAlt px-2 py-0.5 rounded border border-gym-border">
+                  Active Baseline
                 </span>
               </div>
             ) : (

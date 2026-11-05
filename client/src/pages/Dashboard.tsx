@@ -155,19 +155,19 @@ export const Dashboard: React.FC<DashboardProps> = ({ activeSession, triggerSimS
   const getStatusColor = (status: string, alpha: number = 1) => {
     switch (status) {
       case 'PROPER_WORKOUT':
-        return `rgba(16, 185, 129, ${alpha})`; // Green
+        return `rgba(255, 122, 0, ${alpha})`; // Primary Orange
       case 'IMPROPER_WORKOUT':
-        return `rgba(245, 158, 11, ${alpha})`; // Yellow
+        return `rgba(250, 204, 21, ${alpha})`; // Neon Yellow (warning)
       case 'NON_WORKOUT':
-        return `rgba(239, 68, 68, ${alpha})`; // Red
+        return `rgba(255, 77, 90, ${alpha})`; // Neon Red (error)
       case 'RESTING':
-        return `rgba(59, 130, 246, ${alpha})`; // Blue
+        return `rgba(56, 189, 248, ${alpha})`; // Cyan (info)
       case 'ANALYZING':
-        return `rgba(148, 163, 184, ${alpha})`; // Gray
+        return `rgba(148, 163, 184, ${alpha})`; // Slate
       case 'SENSOR_DISCONNECTED':
-        return `rgba(249, 115, 22, ${alpha})`; // Orange/Warning
+        return `rgba(250, 204, 21, ${alpha})`; // Warning Yellow
       default:
-        return `rgba(100, 116, 139, ${alpha})`; // Gray fallback
+        return `rgba(148, 163, 184, ${alpha})`;
     }
   };
 
@@ -184,33 +184,38 @@ export const Dashboard: React.FC<DashboardProps> = ({ activeSession, triggerSimS
   };
 
   const cards = [
-    { title: 'Workouts', val: stats.totalWorkouts, desc: 'sessions recorded', icon: Dumbbell, color: 'text-gym-accent' },
-    { title: 'Total Repetitions', val: stats.totalReps, desc: 'reps completed', icon: Hash, color: 'text-gym-accentBlue' },
-    { title: 'Total Sets', val: stats.totalSets, desc: 'active sets logged', icon: Layers, color: 'text-gym-accentYellow' },
-    { title: 'Volume Lifted', val: `${stats.totalVolume} kg`, desc: 'total weight volume', icon: Weight, color: 'text-purple-400' },
-    { title: 'Active Duration', val: `${stats.totalDurationMin} min`, desc: 'cumulative effort', icon: Clock, color: 'text-blue-400' },
-    { title: 'Avg Form Score', val: `${stats.avgFormScore}%`, desc: 'posture consistency', icon: Award, color: 'text-gym-accent' },
+    { title: 'Workouts', val: stats.totalWorkouts, desc: 'sessions recorded', icon: Dumbbell, color: 'text-gym-accent', bgGlow: 'rgba(255,122,0,0.15)' },
+    { title: 'Total Repetitions', val: stats.totalReps, desc: 'reps completed', icon: Hash, color: 'text-gym-accentBlue', bgGlow: 'rgba(56,189,248,0.15)' },
+    { title: 'Total Sets', val: stats.totalSets, desc: 'active sets logged', icon: Layers, color: 'text-gym-accentYellow', bgGlow: 'rgba(250,204,21,0.15)' },
+    { title: 'Volume Lifted', val: `${stats.totalVolume.toLocaleString()} kg`, desc: 'cumulative load', icon: Weight, color: 'text-purple-400', bgGlow: 'rgba(192,132,252,0.15)' },
+    { title: 'Active Duration', val: `${stats.totalDurationMin} min`, desc: 'total time under load', icon: Clock, color: 'text-blue-400', bgGlow: 'rgba(96,165,250,0.15)' },
+    { title: 'Avg Form Score', val: `${stats.avgFormScore}%`, desc: 'technique rating', icon: Award, color: 'text-gym-accent', bgGlow: 'rgba(255,122,0,0.15)' },
   ];
 
   return (
-    <div className="space-y-6 py-6 animate-fade-in">
+    <div className="space-y-6 py-6 animate-fade-in max-w-7xl mx-auto">
       {/* Overview Metric Grid */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         {cards.map((card, i) => {
           const Icon = card.icon;
           return (
-            <div key={i} className="glass-panel p-4 flex flex-col justify-between">
+            <div key={i} className="stat-card flex flex-col justify-between group">
               <div className="flex justify-between items-start">
                 <span className="text-[10px] uppercase font-display tracking-widest text-gym-muted font-bold">
                   {card.title}
                 </span>
-                <Icon className={`w-4 h-4 ${card.color}`} />
+                <div
+                  className="w-8 h-8 rounded-xl flex items-center justify-center transition-transform duration-200 group-hover:scale-110"
+                  style={{ background: card.bgGlow }}
+                >
+                  <Icon className={`w-4 h-4 ${card.color}`} />
+                </div>
               </div>
               <div className="mt-4">
-                <div className="text-xl md:text-2xl font-black font-display text-gym-text tracking-wide leading-none">
+                <div className="text-xl md:text-2xl font-black font-display text-gym-text tracking-wide leading-none group-hover:text-gym-accent transition-colors">
                   {card.val}
                 </div>
-                <span className="text-[9px] text-gym-muted mt-1 block">
+                <span className="text-[10px] text-gym-muted mt-1.5 block">
                   {card.desc}
                 </span>
               </div>
@@ -229,33 +234,35 @@ export const Dashboard: React.FC<DashboardProps> = ({ activeSession, triggerSimS
                 <h3 className="font-display font-bold text-base tracking-wide text-gym-text">
                   WEEKLY TELEMETRY ANALYTICS
                 </h3>
-                <p className="text-[10px] text-gym-muted uppercase font-display">Weight Volume & Form Quality Trends</p>
+                <p className="text-[11px] text-gym-muted font-sans mt-0.5">Weight Volume & Form Quality Trends</p>
               </div>
-              <TrendingUp className="w-5 h-5 text-gym-accent" />
+              <div className="w-9 h-9 rounded-xl bg-gym-accent/10 border border-gym-accent/25 flex items-center justify-center">
+                <TrendingUp className="w-5 h-5 text-gym-accent" />
+              </div>
             </div>
 
-            <div className="h-72 w-full">
+            <div className="h-72 w-full pt-2">
               {chartData.length > 0 ? (
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                     <defs>
                       <linearGradient id="colorVolume" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#0ea5e9" stopOpacity={0.2}/>
-                        <stop offset="95%" stopColor="#0ea5e9" stopOpacity={0}/>
+                        <stop offset="5%" stopColor="#38BDF8" stopOpacity={0.35}/>
+                        <stop offset="95%" stopColor="#38BDF8" stopOpacity={0}/>
                       </linearGradient>
                       <linearGradient id="colorForm" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#10b981" stopOpacity={0.2}/>
-                        <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                        <stop offset="5%" stopColor="#FF7A00" stopOpacity={0.40}/>
+                        <stop offset="95%" stopColor="#FF7A00" stopOpacity={0}/>
                       </linearGradient>
                     </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" opacity={0.5} />
-                    <XAxis dataKey="date" stroke="#64748b" style={{ fontSize: 10, fontFamily: 'Orbitron' }} />
-                    <YAxis yAxisId="left" stroke="#0ea5e9" style={{ fontSize: 10, fontFamily: 'Orbitron' }} />
-                    <YAxis yAxisId="right" orientation="right" stroke="#10b981" style={{ fontSize: 10, fontFamily: 'Orbitron' }} domain={[60, 100]} />
-                    <Tooltip contentStyle={{ backgroundColor: '#0c0f1d', borderColor: '#1e293b', borderRadius: '12px', fontSize: 11 }} />
-                    <Legend wrapperStyle={{ fontSize: 11 }} />
-                    <Area yAxisId="left" type="monotone" dataKey="volume" name="Volume (kg)" stroke="#0ea5e9" fillOpacity={1} fill="url(#colorVolume)" strokeWidth={2} />
-                    <Area yAxisId="right" type="monotone" dataKey="form" name="Form Score (%)" stroke="#10b981" fillOpacity={1} fill="url(#colorForm)" strokeWidth={2} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#303036" opacity={0.6} />
+                    <XAxis dataKey="date" stroke="#A1A1AA" style={{ fontSize: 10, fontFamily: 'Orbitron' }} />
+                    <YAxis yAxisId="left" stroke="#38BDF8" style={{ fontSize: 10, fontFamily: 'Orbitron' }} />
+                    <YAxis yAxisId="right" orientation="right" stroke="#FF7A00" style={{ fontSize: 10, fontFamily: 'Orbitron' }} domain={[60, 100]} />
+                    <Tooltip contentStyle={{ backgroundColor: '#1A1A1F', borderColor: '#303036', borderRadius: '14px', fontSize: 11, color: '#F5F5F5', boxShadow: '0 8px 32px rgba(0,0,0,0.7)' }} />
+                    <Legend wrapperStyle={{ fontSize: 11, color: '#A1A1AA', paddingTop: 8 }} />
+                    <Area yAxisId="left" type="monotone" dataKey="volume" name="Volume (kg)" stroke="#38BDF8" fillOpacity={1} fill="url(#colorVolume)" strokeWidth={2.5} />
+                    <Area yAxisId="right" type="monotone" dataKey="form" name="Form Score (%)" stroke="#FF7A00" fillOpacity={1} fill="url(#colorForm)" strokeWidth={2.5} />
                   </AreaChart>
                 </ResponsiveContainer>
               ) : (
@@ -272,15 +279,15 @@ export const Dashboard: React.FC<DashboardProps> = ({ activeSession, triggerSimS
               <h4 className="font-display font-bold text-xs uppercase text-gym-muted tracking-wider">
                 Repetition Progression
               </h4>
-              <div className="h-48 w-full">
+              <div className="h-48 w-full pt-1">
                 {chartData.length > 0 ? (
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={chartData}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" opacity={0.3} />
-                      <XAxis dataKey="date" stroke="#64748b" style={{ fontSize: 9, fontFamily: 'Orbitron' }} />
-                      <YAxis stroke="#64748b" style={{ fontSize: 9, fontFamily: 'Orbitron' }} />
-                      <Tooltip contentStyle={{ backgroundColor: '#0c0f1d', borderColor: '#1e293b' }} />
-                      <Bar dataKey="reps" fill="#0ea5e9" radius={[4, 4, 0, 0]} name="Reps per Session" />
+                      <CartesianGrid strokeDasharray="3 3" stroke="#303036" opacity={0.6} />
+                      <XAxis dataKey="date" stroke="#A1A1AA" style={{ fontSize: 9, fontFamily: 'Orbitron' }} />
+                      <YAxis stroke="#A1A1AA" style={{ fontSize: 9, fontFamily: 'Orbitron' }} />
+                      <Tooltip contentStyle={{ backgroundColor: '#1A1A1F', borderColor: '#303036', borderRadius: '12px', color: '#F5F5F5' }} />
+                      <Bar dataKey="reps" fill="#FF7A00" radius={[6, 6, 0, 0]} name="Reps per Session" />
                     </BarChart>
                   </ResponsiveContainer>
                 ) : (
@@ -292,17 +299,17 @@ export const Dashboard: React.FC<DashboardProps> = ({ activeSession, triggerSimS
             {/* Weight progression */}
             <div className="glass-panel p-5 space-y-3">
               <h4 className="font-display font-bold text-xs uppercase text-gym-muted tracking-wider">
-                Lift Weight progression
+                Lift Weight Progression
               </h4>
-              <div className="h-48 w-full">
+              <div className="h-48 w-full pt-1">
                 {chartData.length > 0 ? (
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={chartData}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" opacity={0.3} />
-                      <XAxis dataKey="date" stroke="#64748b" style={{ fontSize: 9, fontFamily: 'Orbitron' }} />
-                      <YAxis stroke="#64748b" style={{ fontSize: 9, fontFamily: 'Orbitron' }} />
-                      <Tooltip contentStyle={{ backgroundColor: '#0c0f1d', borderColor: '#1e293b' }} />
-                      <Line type="monotone" dataKey="weight" stroke="#f59e0b" strokeWidth={2} dot={{ fill: '#f59e0b', r: 3 }} name="Weight (kg)" />
+                      <CartesianGrid strokeDasharray="3 3" stroke="#303036" opacity={0.6} />
+                      <XAxis dataKey="date" stroke="#A1A1AA" style={{ fontSize: 9, fontFamily: 'Orbitron' }} />
+                      <YAxis stroke="#A1A1AA" style={{ fontSize: 9, fontFamily: 'Orbitron' }} />
+                      <Tooltip contentStyle={{ backgroundColor: '#1A1A1F', borderColor: '#303036', borderRadius: '12px', color: '#F5F5F5' }} />
+                      <Line type="monotone" dataKey="weight" stroke="#FF7A00" strokeWidth={2.5} dot={{ fill: '#FF7A00', r: 4 }} activeDot={{ r: 6 }} name="Weight (kg)" />
                     </LineChart>
                   </ResponsiveContainer>
                 ) : (
@@ -317,14 +324,14 @@ export const Dashboard: React.FC<DashboardProps> = ({ activeSession, triggerSimS
         <div className="space-y-6">
           {/* SMART COACH CARD */}
           <div 
-            className="glass-panel p-6 space-y-4 border border-gym-border/60 relative overflow-hidden"
+            className="glass-panel p-6 space-y-5 border border-gym-border relative overflow-hidden"
           >
             <div className="flex justify-between items-center">
               <h3 className="font-display font-bold text-xs uppercase tracking-wider text-gym-accent flex items-center gap-1.5">
-                <span>SMART COACH</span>
+                <span>⚡ SMART COACH AI</span>
               </h3>
-              <span className={`w-2 h-2 rounded-full ${
-                activeSession.isActive ? 'bg-gym-accent animate-pulse' : 'bg-gym-muted'
+              <span className={`w-2.5 h-2.5 rounded-full ${
+                activeSession.isActive ? 'bg-gym-accent animate-pulse shadow-[0_0_10px_rgba(255,122,0,0.8)]' : 'bg-gym-muted'
               }`} />
             </div>
 
@@ -333,8 +340,9 @@ export const Dashboard: React.FC<DashboardProps> = ({ activeSession, triggerSimS
               <div 
                 className="p-4 rounded-xl border flex flex-col justify-center items-center text-center space-y-2 animate-fade-in"
                 style={{
-                  backgroundColor: getStatusColor(detectionState.status, 0.05),
-                  borderColor: getStatusColor(detectionState.status, 0.3)
+                  backgroundColor: getStatusColor(detectionState.status, 0.08),
+                  borderColor: getStatusColor(detectionState.status, 0.35),
+                  boxShadow: `0 4px 18px ${getStatusColor(detectionState.status, 0.12)}`
                 }}
               >
                 <div className="text-[10px] uppercase font-display font-black tracking-wider" style={{ color: getStatusColor(detectionState.status) }}>
@@ -346,24 +354,24 @@ export const Dashboard: React.FC<DashboardProps> = ({ activeSession, triggerSimS
               </div>
 
               {/* Form Score and Improvement Info */}
-              <div className="space-y-2 font-display">
-                <div className="flex justify-between items-center bg-gym-card/50 p-2.5 rounded-xl border border-gym-border/40 text-xs">
-                  <span className="text-gym-muted font-bold uppercase text-[9px] tracking-wide">Form Score:</span>
+              <div className="space-y-2.5 font-display">
+                <div className="flex justify-between items-center bg-gym-cardAlt/70 p-3 rounded-xl border border-gym-border text-xs">
+                  <span className="text-gym-muted font-bold uppercase text-[10px] tracking-wide">Form Score</span>
                   <span className="text-gym-accent font-black text-sm">
                     {isNaN(detectionState.formScore) ? '0%' : `${Math.round(detectionState.formScore)}%`}
                   </span>
                 </div>
                 
-                <div className="flex flex-col bg-gym-card/50 p-2.5 rounded-xl border border-gym-border/40 gap-1 text-xs">
-                  <span className="text-gym-muted font-bold uppercase text-[9px] tracking-wide">What to improve:</span>
+                <div className="flex flex-col bg-gym-cardAlt/70 p-3 rounded-xl border border-gym-border gap-1 text-xs">
+                  <span className="text-gym-muted font-bold uppercase text-[9px] tracking-wide">What to improve</span>
                   <span className="text-gym-text font-semibold italic text-[11px] leading-relaxed">
                     "{detectionState.latestFeedback?.recommendation || 'No major issue detected.'}"
                   </span>
                 </div>
 
                 {detectionState.latestFeedback?.recoveryTip && (
-                  <div className="flex flex-col bg-gym-card/50 p-2.5 rounded-xl border border-gym-border/40 gap-1 text-xs">
-                    <span className="text-gym-muted font-bold uppercase text-[9px] tracking-wide">Recovery:</span>
+                  <div className="flex flex-col bg-gym-cardAlt/70 p-3 rounded-xl border border-gym-border gap-1 text-xs">
+                    <span className="text-gym-muted font-bold uppercase text-[9px] tracking-wide">Recovery Tip</span>
                     <span className="text-gym-accentBlue font-semibold italic text-[11px] leading-relaxed">
                       "{detectionState.latestFeedback.recoveryTip}"
                     </span>
@@ -374,13 +382,13 @@ export const Dashboard: React.FC<DashboardProps> = ({ activeSession, triggerSimS
               {/* View Live Feedback Button */}
               <button
                 onClick={() => navigate('/live')}
-                className="w-full flex items-center justify-center gap-2 bg-gym-accent/10 hover:bg-gym-accent text-gym-accent hover:text-gym-dark border border-gym-accent/30 font-display font-bold text-xs py-3 rounded-xl transition-all duration-200"
+                className="w-full flex items-center justify-center gap-2 bg-gym-accent/15 hover:bg-gym-accent text-gym-accent hover:text-gym-dark border border-gym-accent/40 font-display font-bold text-xs py-3 rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-gym-accent/20"
               >
-                VIEW LIVE FEEDBACK
+                VIEW LIVE FEEDBACK →
               </button>
             </div>
             
-            <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-gym-accent to-gym-accentBlue" />
+            <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-gym-accent to-gym-accentHover" />
           </div>
 
           {/* Quick Workout Console */}
@@ -390,27 +398,27 @@ export const Dashboard: React.FC<DashboardProps> = ({ activeSession, triggerSimS
             </h3>
             
             {activeSession.isActive ? (
-              <div className="p-4 bg-gym-accent/5 border border-gym-accent/20 rounded-xl space-y-3">
+              <div className="p-4 bg-gym-accent/8 border border-gym-accent/25 rounded-xl space-y-3">
                 <div className="flex justify-between items-center">
                   <span className="text-[10px] text-gym-accent font-display font-bold uppercase tracking-wider">
                     Workout Session Active
                   </span>
-                  <div className="w-2 h-2 bg-gym-accent rounded-full animate-ping" />
+                  <div className="w-2.5 h-2.5 bg-gym-accent rounded-full animate-ping" />
                 </div>
                 <div className="space-y-1">
                   <div className="text-[9px] text-gym-muted font-display uppercase leading-none">Exercise</div>
                   <div className="text-sm font-bold text-gym-text">{activeSession.exercise}</div>
                 </div>
                 <div className="grid grid-cols-3 gap-2">
-                  <div className="bg-gym-card/50 p-2 rounded-lg text-center">
+                  <div className="bg-gym-cardAlt p-2 rounded-lg text-center border border-gym-border">
                     <div className="text-[9px] text-gym-muted font-display uppercase leading-none">Sets</div>
                     <div className="text-xs font-bold text-gym-text mt-1">{activeSession.sets}</div>
                   </div>
-                  <div className="bg-gym-card/50 p-2 rounded-lg text-center">
+                  <div className="bg-gym-cardAlt p-2 rounded-lg text-center border border-gym-border">
                     <div className="text-[9px] text-gym-muted font-display uppercase leading-none">Reps</div>
                     <div className="text-xs font-bold text-gym-text mt-1">{activeSession.reps}</div>
                   </div>
-                  <div className="bg-gym-card/50 p-2 rounded-lg text-center">
+                  <div className="bg-gym-cardAlt p-2 rounded-lg text-center border border-gym-border">
                     <div className="text-[9px] text-gym-muted font-display uppercase leading-none">Weight</div>
                     <div className="text-xs font-bold text-gym-text mt-1">{activeSession.weight} kg</div>
                   </div>
@@ -418,12 +426,14 @@ export const Dashboard: React.FC<DashboardProps> = ({ activeSession, triggerSimS
               </div>
             ) : (
               <div className="space-y-4">
-                <div className="form-group">
-                  <label className="text-[10px] uppercase font-display tracking-wider text-gym-muted font-semibold">Select Exercise</label>
+                <div>
+                  <label className="text-[10px] uppercase font-display tracking-wider text-gym-muted font-bold block mb-1.5">
+                    Select Exercise
+                  </label>
                   <select 
                     value={selectedEx} 
                     onChange={(e) => setSelectedEx(e.target.value)}
-                    className="w-full bg-gym-card border border-gym-border rounded-xl px-3 py-2 text-xs focus:border-gym-accent text-gym-text font-semibold outline-none mt-1.5"
+                    className="w-full bg-[#222228] border border-gym-border rounded-xl px-3.5 py-2.5 text-xs focus:border-gym-accent text-gym-text font-semibold outline-none transition-colors"
                   >
                     <option value="Bench Press">Bench Press</option>
                     <option value="Squat">Squat</option>
@@ -432,8 +442,10 @@ export const Dashboard: React.FC<DashboardProps> = ({ activeSession, triggerSimS
                     <option value="Shoulder Press">Shoulder Press</option>
                   </select>
                 </div>
-                <div className="form-group">
-                  <label className="text-[10px] uppercase font-display tracking-wider text-gym-muted font-semibold">Weight Load (kg)</label>
+                <div>
+                  <label className="text-[10px] uppercase font-display tracking-wider text-gym-muted font-bold block mb-1.5">
+                    Weight Load (kg)
+                  </label>
                   <input
                     type="number"
                     value={workoutWeightInput}
@@ -441,14 +453,14 @@ export const Dashboard: React.FC<DashboardProps> = ({ activeSession, triggerSimS
                     min="5"
                     max="200"
                     step="2.5"
-                    className="w-full bg-gym-card border border-gym-border rounded-xl px-3 py-2 text-xs focus:border-gym-accent text-gym-text font-semibold outline-none mt-1.5"
+                    className="w-full bg-[#222228] border border-gym-border rounded-xl px-3.5 py-2.5 text-xs focus:border-gym-accent text-gym-text font-semibold outline-none transition-colors"
                   />
                 </div>
                 <button
                   onClick={handleStartWorkout}
-                  className="w-full flex items-center justify-center gap-2 bg-gym-accent hover:bg-gym-accent/90 text-gym-dark font-display font-semibold text-xs py-3.5 rounded-xl transition-all duration-200"
+                  className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#FF7A00] to-[#FF5500] hover:from-[#FF8C1A] hover:to-[#E65C00] text-[#0B0B0D] font-display font-bold text-xs py-3.5 rounded-xl transition-all duration-200 shadow-md shadow-gym-accent/25 hover:-translate-y-0.5"
                 >
-                  <Play className="w-4 h-4 fill-gym-dark" />
+                  <Play className="w-4 h-4 fill-[#0B0B0D]" />
                   Initiate Workout
                 </button>
               </div>
@@ -461,13 +473,13 @@ export const Dashboard: React.FC<DashboardProps> = ({ activeSession, triggerSimS
               <h3 className="font-display font-bold text-sm tracking-wide text-gym-text">
                 RECENT WORKOUT LOGS
               </h3>
-              <p className="text-[10px] text-gym-muted uppercase font-display">Latest recorded telemetry logs</p>
+              <p className="text-[11px] text-gym-muted font-sans mt-0.5">Latest recorded telemetry logs</p>
             </div>
 
-            <div className="space-y-3 max-h-80 overflow-y-auto pr-1">
+            <div className="space-y-2.5 max-h-80 overflow-y-auto pr-1">
               {workouts.length > 0 ? (
                 workouts.slice(0, 5).map((w, idx) => (
-                  <div key={idx} className="p-3 bg-gym-card/50 border border-gym-border rounded-xl flex justify-between items-center hover:border-gym-accentBlue/20 transition-colors">
+                  <div key={idx} className="p-3 bg-gym-cardAlt/70 border border-gym-border rounded-xl flex justify-between items-center hover:border-gym-accent/35 transition-all">
                     <div>
                       <span className="text-[10px] font-mono text-gym-muted">{w.date}</span>
                       <h4 className="text-xs font-bold text-gym-text font-display tracking-wide uppercase mt-0.5">{w.exercise}</h4>

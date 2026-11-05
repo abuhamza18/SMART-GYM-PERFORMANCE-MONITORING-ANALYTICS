@@ -131,13 +131,13 @@ export const Analytics: React.FC = () => {
         </div>
 
         {/* Filter Controls Bar */}
-        <div className="flex flex-wrap items-center gap-3 bg-gym-panel border border-gym-border p-3.5 rounded-2xl">
-          <div className="flex items-center gap-2 text-xs text-gym-muted font-display font-bold uppercase mr-2">
+        <div className="flex flex-wrap items-center gap-3 bg-gym-panel border border-gym-border p-3 rounded-2xl shadow-md">
+          <div className="flex items-center gap-2 text-xs text-gym-muted font-display font-bold uppercase mr-1">
             <Filter className="w-4 h-4 text-gym-accent" />
-            Filters:
+            <span>Filters:</span>
           </div>
           {/* Exercise Select */}
-          <div className="flex items-center gap-2 bg-gym-card/50 px-3 py-1.5 rounded-xl border border-gym-border">
+          <div className="flex items-center gap-2 bg-[#1A1A1F] px-3.5 py-2 rounded-xl border border-gym-border focus-within:border-gym-accent transition-colors">
             <Dumbbell className="w-3.5 h-3.5 text-gym-accent" />
             <select
               value={exerciseFilter}
@@ -153,8 +153,8 @@ export const Analytics: React.FC = () => {
             </select>
           </div>
           {/* Date Filter Select */}
-          <div className="flex items-center gap-2 bg-gym-card/50 px-3 py-1.5 rounded-xl border border-gym-border">
-            <Calendar className="w-3.5 h-3.5 text-gym-accentBlue" />
+          <div className="flex items-center gap-2 bg-[#1A1A1F] px-3.5 py-2 rounded-xl border border-gym-border focus-within:border-gym-accent transition-colors">
+            <Calendar className="w-3.5 h-3.5 text-gym-accent" />
             <select
               value={timeFilter}
               onChange={(e) => setTimeFilter(e.target.value)}
@@ -190,14 +190,14 @@ export const Analytics: React.FC = () => {
               {filteredWorkouts.length > 0 ? (
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={filteredWorkouts} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" opacity={0.3} />
-                    <XAxis dataKey="date" stroke="#64748b" style={{ fontSize: 9, fontFamily: 'Orbitron' }} />
-                    <YAxis yAxisId="left" stroke="#0ea5e9" label={{ value: 'Weight (kg)', angle: -90, position: 'insideLeft', offset: 10, fill: '#0ea5e9', style: {fontSize: 10, fontFamily: 'Orbitron'} }} style={{ fontSize: 9, fontFamily: 'Orbitron' }} />
-                    <YAxis yAxisId="right" orientation="right" stroke="#f59e0b" label={{ value: 'Reps Count', angle: 90, position: 'insideRight', offset: 10, fill: '#f59e0b', style: {fontSize: 10, fontFamily: 'Orbitron'} }} style={{ fontSize: 9, fontFamily: 'Orbitron' }} />
-                    <Tooltip contentStyle={{ backgroundColor: '#0c0f1d', borderColor: '#1e293b' }} />
-                    <Legend wrapperStyle={{ fontSize: 10 }} />
-                    <Line yAxisId="left" type="monotone" dataKey="weight" name="Active Load (kg)" stroke="#0ea5e9" strokeWidth={2} dot={{ fill: '#0ea5e9', r: 3.5 }} activeDot={{ r: 6 }} />
-                    <Line yAxisId="right" type="monotone" dataKey="reps" name="Repetitions Count" stroke="#f59e0b" strokeWidth={1.5} dot={{ fill: '#f59e0b', r: 2.5 }} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#303036" opacity={0.7} />
+                    <XAxis dataKey="date" stroke="#A1A1AA" style={{ fontSize: 9, fontFamily: 'Orbitron' }} />
+                    <YAxis yAxisId="left" stroke="#38BDF8" label={{ value: 'Weight (kg)', angle: -90, position: 'insideLeft', offset: 10, fill: '#38BDF8', style: {fontSize: 10, fontFamily: 'Orbitron'} }} style={{ fontSize: 9, fontFamily: 'Orbitron' }} />
+                    <YAxis yAxisId="right" orientation="right" stroke="#FACC15" label={{ value: 'Reps Count', angle: 90, position: 'insideRight', offset: 10, fill: '#FACC15', style: {fontSize: 10, fontFamily: 'Orbitron'} }} style={{ fontSize: 9, fontFamily: 'Orbitron' }} />
+                    <Tooltip contentStyle={{ backgroundColor: '#1A1A1F', borderColor: '#303036', borderRadius: '10px', color: '#F5F5F5' }} />
+                    <Legend wrapperStyle={{ fontSize: 10, color: '#A1A1AA' }} />
+                    <Line yAxisId="left" type="monotone" dataKey="weight" name="Active Load (kg)" stroke="#38BDF8" strokeWidth={2} dot={{ fill: '#38BDF8', r: 3.5 }} activeDot={{ r: 6 }} />
+                    <Line yAxisId="right" type="monotone" dataKey="reps" name="Repetitions Count" stroke="#FACC15" strokeWidth={1.5} dot={{ fill: '#FACC15', r: 2.5 }} />
                   </LineChart>
                 </ResponsiveContainer>
               ) : (
@@ -224,12 +224,12 @@ export const Analytics: React.FC = () => {
               {filteredWorkouts.length > 0 ? (
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={filteredWorkouts} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" opacity={0.3} />
-                    <XAxis dataKey="date" stroke="#64748b" style={{ fontSize: 9, fontFamily: 'Orbitron' }} />
-                    <YAxis stroke="#10b981" domain={[50, 100]} label={{ value: 'Form Score (%)', angle: -90, position: 'insideLeft', offset: 10, fill: '#10b981', style: {fontSize: 10, fontFamily: 'Orbitron'} }} style={{ fontSize: 9, fontFamily: 'Orbitron' }} />
-                    <Tooltip contentStyle={{ backgroundColor: '#0c0f1d', borderColor: '#1e293b' }} />
-                    <Legend wrapperStyle={{ fontSize: 10 }} />
-                    <Bar dataKey="form_score" name="Form Accuracy Score (%)" fill="#10b981" radius={[5, 5, 0, 0]} maxBarSize={30} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#303036" opacity={0.7} />
+                    <XAxis dataKey="date" stroke="#A1A1AA" style={{ fontSize: 9, fontFamily: 'Orbitron' }} />
+                    <YAxis stroke="#FF7A00" domain={[50, 100]} label={{ value: 'Form Score (%)', angle: -90, position: 'insideLeft', offset: 10, fill: '#FF7A00', style: {fontSize: 10, fontFamily: 'Orbitron'} }} style={{ fontSize: 9, fontFamily: 'Orbitron' }} />
+                    <Tooltip contentStyle={{ backgroundColor: '#1A1A1F', borderColor: '#303036', borderRadius: '10px', color: '#F5F5F5' }} />
+                    <Legend wrapperStyle={{ fontSize: 10, color: '#A1A1AA' }} />
+                    <Bar dataKey="form_score" name="Form Accuracy Score (%)" fill="#FF7A00" radius={[5, 5, 0, 0]} maxBarSize={30} />
                   </BarChart>
                 </ResponsiveContainer>
               ) : (
@@ -255,13 +255,13 @@ export const Analytics: React.FC = () => {
             <div className="h-72 w-full flex items-center justify-center">
               <ResponsiveContainer width="100%" height="100%">
                 <RadarChart cx="50%" cy="50%" outerRadius="70%" data={getRadarData()}>
-                  <PolarGrid stroke="#1e293b" />
-                  <PolarAngleAxis dataKey="subject" stroke="#64748b" style={{ fontSize: 8, fontFamily: 'Orbitron' }} />
-                  <PolarRadiusAxis angle={30} domain={[0, 100]} stroke="#1e293b" tick={false} />
-                  <Radar name="Form Quality" dataKey="Form" stroke="#10b981" fill="#10b981" fillOpacity={0.15} />
-                  <Radar name="Strength Max" dataKey="Strength" stroke="#0ea5e9" fill="#0ea5e9" fillOpacity={0.15} />
-                  <Tooltip contentStyle={{ backgroundColor: '#0c0f1d', borderColor: '#1e293b', fontSize: 10 }} />
-                  <Legend wrapperStyle={{ fontSize: 10 }} />
+                  <PolarGrid stroke="#303036" />
+                  <PolarAngleAxis dataKey="subject" stroke="#A1A1AA" style={{ fontSize: 8, fontFamily: 'Orbitron' }} />
+                  <PolarRadiusAxis angle={30} domain={[0, 100]} stroke="#303036" tick={false} />
+                  <Radar name="Form Quality" dataKey="Form" stroke="#FF7A00" fill="#FF7A00" fillOpacity={0.25} />
+                  <Radar name="Strength Max" dataKey="Strength" stroke="#38BDF8" fill="#38BDF8" fillOpacity={0.25} />
+                  <Tooltip contentStyle={{ backgroundColor: '#1A1A1F', borderColor: '#303036', borderRadius: '10px', fontSize: 10, color: '#F5F5F5' }} />
+                  <Legend wrapperStyle={{ fontSize: 10, color: '#A1A1AA' }} />
                 </RadarChart>
               </ResponsiveContainer>
             </div>

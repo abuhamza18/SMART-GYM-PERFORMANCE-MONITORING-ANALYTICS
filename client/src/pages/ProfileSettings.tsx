@@ -127,8 +127,8 @@ export const ProfileSettings: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         
         {/* Left Column: Form Settings */}
-        <form onSubmit={handleSaveProfile} className="md:col-span-2 glass-panel p-6 space-y-6">
-          <h3 className="font-display font-bold text-sm tracking-wide text-gym-text uppercase border-b border-gym-border pb-3 flex items-center gap-2">
+        <form onSubmit={handleSaveProfile} className="md:col-span-2 glass-panel p-6 space-y-6 border border-gym-border">
+          <h3 className="font-display font-bold text-sm tracking-wide text-gym-text uppercase border-b border-gym-border/40 pb-3 flex items-center gap-2">
             <User className="w-4.5 h-4.5 text-gym-accent" />
             Biometric Parameters
           </h3>
@@ -140,7 +140,7 @@ export const ProfileSettings: React.FC = () => {
                 type="text"
                 disabled
                 value={username}
-                className="w-full bg-gym-dark/50 border border-gym-border rounded-xl px-4 py-2.5 text-xs text-gym-muted font-semibold outline-none cursor-not-allowed"
+                className="w-full bg-[#111114] border border-gym-border rounded-xl px-4 py-2.5 text-xs text-gym-muted font-semibold outline-none cursor-not-allowed opacity-80"
               />
             </div>
             <div className="form-group space-y-1.5">
@@ -150,7 +150,7 @@ export const ProfileSettings: React.FC = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="athlete@example.com"
-                className="w-full bg-gym-card border border-gym-border rounded-xl px-4 py-2.5 text-xs outline-none focus:border-gym-accent text-gym-text font-semibold"
+                className="w-full bg-[#222228] border border-gym-border rounded-xl px-4 py-2.5 text-xs outline-none focus:border-gym-accent text-gym-text font-semibold transition-colors"
               />
             </div>
             <div className="form-group space-y-1.5">
@@ -160,7 +160,7 @@ export const ProfileSettings: React.FC = () => {
                 value={weightKg}
                 onChange={(e) => setWeightKg(parseFloat(e.target.value) || 0)}
                 step="0.5"
-                className="w-full bg-gym-card border border-gym-border rounded-xl px-4 py-2.5 text-xs outline-none focus:border-gym-accent text-gym-text font-semibold"
+                className="w-full bg-[#222228] border border-gym-border rounded-xl px-4 py-2.5 text-xs outline-none focus:border-gym-accent text-gym-text font-semibold transition-colors"
               />
             </div>
             <div className="form-group space-y-1.5">
@@ -169,13 +169,13 @@ export const ProfileSettings: React.FC = () => {
                 type="number"
                 value={targetCalories}
                 onChange={(e) => setTargetCalories(parseInt(e.target.value) || 0)}
-                className="w-full bg-gym-card border border-gym-border rounded-xl px-4 py-2.5 text-xs outline-none focus:border-gym-accent text-gym-text font-semibold"
+                className="w-full bg-[#222228] border border-gym-border rounded-xl px-4 py-2.5 text-xs outline-none focus:border-gym-accent text-gym-text font-semibold transition-colors"
               />
             </div>
           </div>
 
           <div className="flex justify-between items-center pt-2">
-            {status === 'updating' && <span className="text-xs text-gym-accentBlue">Saving details to SQLite...</span>}
+            {status === 'updating' && <span className="text-xs text-gym-accent font-semibold animate-pulse">Saving details to SQLite...</span>}
             {status === 'success' && <span className="text-xs text-gym-accent font-bold flex items-center gap-1.5">
               <Check className="w-4.5 h-4.5" /> Profile updated successfully!
             </span>}
@@ -186,7 +186,7 @@ export const ProfileSettings: React.FC = () => {
             
             <button
               type="submit"
-              className="bg-gym-accent hover:bg-gym-accent/90 text-gym-dark font-display font-bold text-xs px-6 py-2.5 rounded-xl transition-all duration-200"
+              className="bg-gradient-to-r from-[#FF7A00] to-[#FF5500] hover:from-[#FF8C1A] hover:to-[#E65C00] text-[#0B0B0D] font-display font-bold text-xs px-7 py-3 rounded-xl transition-all duration-200 shadow-md shadow-gym-accent/25 hover:-translate-y-0.5 cursor-pointer"
             >
               Save Parameters
             </button>
@@ -197,9 +197,9 @@ export const ProfileSettings: React.FC = () => {
         <div className="space-y-6">
           
           {/* Microcontroller Calibration Configuration */}
-          <div className="glass-panel p-6 space-y-4">
-            <h3 className="font-display font-bold text-sm tracking-wide text-gym-text uppercase border-b border-gym-border pb-3 flex items-center gap-2">
-              <Sliders className="w-4.5 h-4.5 text-gym-accentBlue" />
+          <div className="glass-panel p-6 space-y-4 border border-gym-border">
+            <h3 className="font-display font-bold text-sm tracking-wide text-gym-text uppercase border-b border-gym-border/40 pb-3 flex items-center gap-2">
+              <Sliders className="w-4.5 h-4.5 text-gym-accent" />
               ESP32 Calibrations
             </h3>
 
@@ -207,7 +207,7 @@ export const ProfileSettings: React.FC = () => {
               <div className="form-group space-y-1.5">
                 <div className="flex justify-between">
                   <label className="text-[10px] uppercase font-display font-bold text-gym-muted">IMU Noise Filter Threshold</label>
-                  <span className="text-gym-accentBlue font-mono font-bold">{imuNoiseThreshold} m/s²</span>
+                  <span className="text-gym-accent font-mono font-bold">{imuNoiseThreshold} m/s²</span>
                 </div>
                 <input
                   type="range"
@@ -216,14 +216,14 @@ export const ProfileSettings: React.FC = () => {
                   step="0.05"
                   value={imuNoiseThreshold}
                   onChange={(e) => setImuNoiseThreshold(parseFloat(e.target.value))}
-                  className="w-full h-1 bg-gym-border rounded-lg appearance-none cursor-pointer accent-gym-accentBlue"
+                  className="w-full h-1.5 bg-gym-cardAlt rounded-lg appearance-none cursor-pointer accent-gym-accent"
                 />
               </div>
 
               <div className="form-group space-y-1.5">
                 <div className="flex justify-between">
                   <label className="text-[10px] uppercase font-display font-bold text-gym-muted">Load Cell Zero Offset</label>
-                  <span className="text-gym-accentBlue font-mono font-bold">{loadCellZeroOffset} kg</span>
+                  <span className="text-gym-accent font-mono font-bold">{loadCellZeroOffset} kg</span>
                 </div>
                 <input
                   type="range"
@@ -232,7 +232,7 @@ export const ProfileSettings: React.FC = () => {
                   step="0.1"
                   value={loadCellZeroOffset}
                   onChange={(e) => setLoadCellZeroOffset(parseFloat(e.target.value))}
-                  className="w-full h-1 bg-gym-border rounded-lg appearance-none cursor-pointer accent-gym-accentBlue"
+                  className="w-full h-1.5 bg-gym-cardAlt rounded-lg appearance-none cursor-pointer accent-gym-accent"
                 />
               </div>
             </div>
@@ -252,7 +252,7 @@ export const ProfileSettings: React.FC = () => {
                   type="button"
                   onClick={() => setAlertFormWarning(!alertFormWarning)}
                   className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
-                    alertFormWarning ? 'bg-gym-accent' : 'bg-slate-700'
+                    alertFormWarning ? 'bg-gym-accent' : 'bg-gym-cardAlt border border-gym-border'
                   }`}
                 >
                   <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${

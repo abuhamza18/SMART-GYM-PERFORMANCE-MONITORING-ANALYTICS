@@ -71,9 +71,9 @@ export const SensorMonitoring: React.FC<SensorMonitoringProps> = ({
     if (!accCtx || !gyroCtx) return;
 
     const drawGrid = (ctx: CanvasRenderingContext2D, w: number, h: number) => {
-      ctx.fillStyle = '#05070c';
+      ctx.fillStyle = '#0B0B0D';
       ctx.fillRect(0, 0, w, h);
-      ctx.strokeStyle = 'rgba(30, 41, 59, 0.4)';
+      ctx.strokeStyle = 'rgba(48, 48, 54, 0.6)';
       ctx.lineWidth = 0.5;
       const step = 20;
       for (let x = 0; x < w; x += step) {
@@ -89,7 +89,7 @@ export const SensorMonitoring: React.FC<SensorMonitoringProps> = ({
         ctx.stroke();
       }
       // Baseline
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+      ctx.strokeStyle = 'rgba(245, 245, 245, 0.08)';
       ctx.beginPath();
       ctx.moveTo(0, h / 2);
       ctx.lineTo(w, h / 2);
@@ -97,10 +97,10 @@ export const SensorMonitoring: React.FC<SensorMonitoringProps> = ({
     };
 
     const drawOfflineOverlay = (ctx: CanvasRenderingContext2D, w: number, h: number, text: string) => {
-      ctx.fillStyle = 'rgba(15, 23, 42, 0.75)';
+      ctx.fillStyle = 'rgba(11, 11, 13, 0.88)';
       ctx.fillRect(0, 0, w, h);
       ctx.font = 'bold 12px Orbitron, sans-serif';
-      ctx.fillStyle = '#ef4444';
+      ctx.fillStyle = '#FF4D5A';
       ctx.textAlign = 'center';
       ctx.fillText(text, w / 2, h / 2);
     };
@@ -115,7 +115,7 @@ export const SensorMonitoring: React.FC<SensorMonitoringProps> = ({
         const accHist = accHistoryRef.current;
         if (accHist.length > 1) {
           // AX - Red
-          accCtx.strokeStyle = '#ef4444';
+          accCtx.strokeStyle = '#FF4D5A';
           accCtx.lineWidth = 1.5;
           accCtx.beginPath();
           accHist.forEach((pt, idx) => {
@@ -126,8 +126,8 @@ export const SensorMonitoring: React.FC<SensorMonitoringProps> = ({
           });
           accCtx.stroke();
 
-          // AY - Green
-          accCtx.strokeStyle = '#10b981';
+          // AY - Primary Orange
+          accCtx.strokeStyle = '#FF7A00';
           accCtx.lineWidth = 1.5;
           accCtx.beginPath();
           accHist.forEach((pt, idx) => {
@@ -139,8 +139,8 @@ export const SensorMonitoring: React.FC<SensorMonitoringProps> = ({
           });
           accCtx.stroke();
 
-          // AZ - Blue
-          accCtx.strokeStyle = '#3b82f6';
+          // AZ - Info Blue
+          accCtx.strokeStyle = '#38BDF8';
           accCtx.lineWidth = 1.5;
           accCtx.beginPath();
           accHist.forEach((pt, idx) => {
@@ -161,7 +161,7 @@ export const SensorMonitoring: React.FC<SensorMonitoringProps> = ({
         const gyroHist = gyroHistoryRef.current;
         if (gyroHist.length > 1) {
           // GX - Red
-          gyroCtx.strokeStyle = '#ef4444';
+          gyroCtx.strokeStyle = '#FF4D5A';
           gyroCtx.lineWidth = 1.5;
           gyroCtx.beginPath();
           gyroHist.forEach((pt, idx) => {
@@ -172,8 +172,8 @@ export const SensorMonitoring: React.FC<SensorMonitoringProps> = ({
           });
           gyroCtx.stroke();
 
-          // GY - Green
-          gyroCtx.strokeStyle = '#10b981';
+          // GY - Primary Orange
+          gyroCtx.strokeStyle = '#FF7A00';
           gyroCtx.lineWidth = 1.5;
           gyroCtx.beginPath();
           gyroHist.forEach((pt, idx) => {
@@ -184,8 +184,8 @@ export const SensorMonitoring: React.FC<SensorMonitoringProps> = ({
           });
           gyroCtx.stroke();
 
-          // GZ - Blue
-          gyroCtx.strokeStyle = '#3b82f6';
+          // GZ - Info Blue
+          gyroCtx.strokeStyle = '#38BDF8';
           gyroCtx.lineWidth = 1.5;
           gyroCtx.beginPath();
           gyroHist.forEach((pt, idx) => {
@@ -219,88 +219,105 @@ export const SensorMonitoring: React.FC<SensorMonitoringProps> = ({
       </div>
 
       {/* Connection & Status Block */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         
         {/* ESP32 Status */}
-        <div className="glass-panel p-5 flex items-center justify-between transition-all duration-300 hover:border-gym-border/80">
-          <div className="space-y-1.5">
-            <span className="text-[10px] text-gym-muted font-display uppercase tracking-widest font-bold flex items-center gap-1.5">
+        <div className="glass-panel p-5 flex flex-col justify-between transition-all duration-300 hover:border-gym-border/80 min-h-[125px] overflow-hidden">
+          {/* Top row: Label & Power toggle button */}
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-[10px] text-gym-muted font-display uppercase tracking-widest font-bold flex items-center gap-2">
               Processor Node
               {isNodeActive ? (
-                <span className="inline-block w-2 h-2 rounded-full bg-gym-accent animate-ping" />
+                <span className="inline-block w-2 h-2 rounded-full bg-gym-accent shadow-[0_0_8px_rgba(255,122,0,0.85)] animate-pulse" />
               ) : (
-                <span className="inline-block w-2 h-2 rounded-full bg-gym-accentRed" />
+                <span className="inline-block w-2 h-2 rounded-full bg-gym-accentRed shadow-[0_0_8px_rgba(255,77,90,0.8)]" />
               )}
             </span>
-            <h4 className="text-base font-bold text-gym-text tracking-wide font-display">ESP32-WROOM-32</h4>
-            <span className="text-[10px] text-gym-muted font-mono leading-none block">
-              IP: {isNodeActive ? '192.168.4.1' : '0.0.0.0 (OFF)'}
-            </span>
-          </div>
 
-          <div className="flex items-center gap-3">
-            {/* Status Badge */}
-            <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full border text-[10px] font-display font-bold transition-all duration-300 ${
-              isNodeActive 
-                ? 'border-gym-accent/30 text-gym-accent bg-gym-accent/5 shadow-[0_0_12px_rgba(16,185,129,0.15)]' 
-                : 'border-gym-accentRed/30 text-gym-accentRed bg-gym-accentRed/5'
-            }`}>
-              <Cpu className={`w-3.5 h-3.5 ${isNodeActive ? 'animate-pulse-slow' : ''}`} />
-              {isNodeActive ? 'CONNECTED' : 'DISCONNECTED'}
-            </div>
-
-            {/* ON / OFF Power Button */}
+            {/* ON / OFF Power Toggle Button */}
             <button
               onClick={onToggleEspPower}
               type="button"
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border font-display font-bold text-[11px] transition-all duration-300 shadow-md ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border font-display font-bold text-[10px] transition-all duration-300 shadow-sm shrink-0 cursor-pointer ${
                 espPowered
-                  ? 'border-gym-accent/50 bg-gym-accent/15 text-gym-accent hover:bg-gym-accent/25 hover:shadow-[0_0_15px_rgba(16,185,129,0.3)]'
-                  : 'border-slate-700 bg-slate-800/90 text-slate-400 hover:bg-gym-accentRed/20 hover:border-gym-accentRed/40 hover:text-gym-accentRed'
+                  ? 'border-gym-accent/60 bg-gym-accent/15 text-gym-accent hover:bg-gym-accent/25 hover:shadow-[0_0_12px_rgba(255,122,0,0.35)]'
+                  : 'border-gym-border bg-gym-cardAlt text-gym-muted hover:bg-gym-accentRed/20 hover:border-gym-accentRed/40 hover:text-gym-accentRed'
               }`}
               title={espPowered ? "Click to Power OFF ESP32 Node" : "Click to Power ON ESP32 Node"}
             >
-              <Power className={`w-3.5 h-3.5 ${espPowered ? 'text-gym-accent animate-pulse-slow' : 'text-slate-400'}`} />
+              <Power className={`w-3.5 h-3.5 ${espPowered ? 'text-gym-accent animate-pulse-slow' : 'text-gym-muted'}`} />
               <span>{espPowered ? 'ON' : 'OFF'}</span>
             </button>
+          </div>
+
+          {/* Bottom row: Device title & Status badge */}
+          <div className="flex items-end justify-between gap-2 mt-4 flex-wrap sm:flex-nowrap">
+            <div className="min-w-0">
+              <h4 className="text-base font-bold text-gym-text tracking-wide font-display truncate">ESP32-WROOM-32</h4>
+              <span className="text-[10px] text-gym-muted font-mono leading-none block mt-1">
+                IP: {isNodeActive ? '192.168.4.1' : '0.0.0.0 (OFF)'}
+              </span>
+            </div>
+
+            {/* Status Badge */}
+            <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-[10px] font-display font-bold transition-all duration-300 shrink-0 ${
+              isNodeActive 
+                ? 'border-gym-accent/30 text-gym-accent bg-gym-accent/5 shadow-[0_0_12px_rgba(255,122,0,0.20)]' 
+                : 'border-gym-accentRed/30 text-gym-accentRed bg-gym-accentRed/5'
+            }`}>
+              <Cpu className={`w-3.5 h-3.5 ${isNodeActive ? 'animate-pulse-slow' : ''}`} />
+              <span>{isNodeActive ? 'CONNECTED' : 'DISCONNECTED'}</span>
+            </div>
           </div>
         </div>
 
         {/* IMU Sensor Status */}
-        <div className="glass-panel p-5 flex items-center justify-between">
-          <div className="space-y-1.5">
+        <div className="glass-panel p-5 flex flex-col justify-between transition-all duration-300 hover:border-gym-border/80 min-h-[115px]">
+          <div className="flex items-center justify-between gap-2">
             <span className="text-[10px] text-gym-muted font-display uppercase tracking-widest font-bold">
               Inertial Measurement Unit
             </span>
-            <h4 className="text-base font-bold text-gym-text tracking-wide font-display">MPU9052 (I2C)</h4>
-            <span className="text-[10px] text-gym-muted font-mono leading-none block">Address: 0x68</span>
           </div>
-          <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full border text-[10px] font-display font-bold ${
-            espConnected 
-              ? 'border-gym-accent/30 text-gym-accent bg-gym-accent/5' 
-              : 'border-gym-accentRed/30 text-gym-accentRed bg-gym-accentRed/5'
-          }`}>
-            <RefreshCw className={`w-3.5 h-3.5 ${espConnected ? 'animate-spin' : ''}`} />
-            {espConnected ? 'STABLE' : 'OFFLINE'}
+
+          <div className="flex items-end justify-between gap-3 mt-3">
+            <div className="min-w-0">
+              <h4 className="text-base font-bold text-gym-text tracking-wide font-display truncate">MPU9052 (I2C)</h4>
+              <span className="text-[10px] text-gym-muted font-mono leading-none block mt-1">Address: 0x68</span>
+            </div>
+
+            <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-[10px] font-display font-bold shrink-0 ${
+              espConnected 
+                ? 'border-gym-accent/30 text-gym-accent bg-gym-accent/5' 
+                : 'border-gym-accentRed/30 text-gym-accentRed bg-gym-accentRed/5'
+            }`}>
+              <RefreshCw className={`w-3.5 h-3.5 ${espConnected ? 'animate-spin' : ''}`} />
+              {espConnected ? 'STABLE' : 'OFFLINE'}
+            </div>
           </div>
         </div>
 
         {/* Load Cell Sensor Status */}
-        <div className="glass-panel p-5 flex items-center justify-between">
-          <div className="space-y-1.5">
+        <div className="glass-panel p-5 flex flex-col justify-between transition-all duration-300 hover:border-gym-border/80 min-h-[115px]">
+          <div className="flex items-center justify-between gap-2">
             <span className="text-[10px] text-gym-muted font-display uppercase tracking-widest font-bold">
               Strain Transducer
             </span>
-            <h4 className="text-base font-bold text-gym-text tracking-wide font-display">HX711 Amplifier</h4>
-            <span className="text-[10px] text-gym-muted font-mono leading-none block">SPS: 80 Samples/sec</span>
           </div>
-          <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full border text-[10px] font-display font-bold ${
-            espConnected 
-              ? 'border-gym-accent/30 text-gym-accent bg-gym-accent/5' 
-              : 'border-gym-accentRed/30 text-gym-accentRed bg-gym-accentRed/5'
-          }`}>
-            <HardDrive className="w-3.5 h-3.5" />
-            {espConnected ? 'CALIBRATED' : 'OFFLINE'}
+
+          <div className="flex items-end justify-between gap-3 mt-3">
+            <div className="min-w-0">
+              <h4 className="text-base font-bold text-gym-text tracking-wide font-display truncate">HX711 Amplifier</h4>
+              <span className="text-[10px] text-gym-muted font-mono leading-none block mt-1">SPS: 80 Samples/sec</span>
+            </div>
+
+            <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-[10px] font-display font-bold shrink-0 ${
+              espConnected 
+                ? 'border-gym-accent/30 text-gym-accent bg-gym-accent/5' 
+                : 'border-gym-accentRed/30 text-gym-accentRed bg-gym-accentRed/5'
+            }`}>
+              <HardDrive className="w-3.5 h-3.5" />
+              {espConnected ? 'CALIBRATED' : 'OFFLINE'}
+            </div>
           </div>
         </div>
 

@@ -13,6 +13,9 @@ import { TrainerDashboard } from './pages/TrainerDashboard';
 import { ProfileSettings } from './pages/ProfileSettings';
 import { CoachComments } from './pages/CoachComments';
 import { Login } from './pages/Login';
+import { Register } from './pages/Register';
+import { ForgotPassword } from './pages/ForgotPassword';
+import { authService } from './services/auth';
 
 // Workout detection module imports
 import { SensorDataService } from './workout-detection/sensorDataService';
@@ -45,8 +48,9 @@ interface TelemetryData {
 }
 
 export const App: React.FC = () => {
-  const [token, setToken] = useState<string | null>(localStorage.getItem('gym_token'));
-  const [username, setUsername] = useState<string>(localStorage.getItem('gym_user') || '');
+  const [token, setToken] = useState<string | null>(authService.getToken());
+  const [username, setUsername] = useState<string>(authService.getUsername());
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   // Telemetry states
   const [espConnected, setEspConnected] = useState(false);
@@ -94,15 +98,12 @@ export const App: React.FC = () => {
 
   // Handle Authentication
   const handleLoginSuccess = (newToken: string, newUsername: string) => {
-    localStorage.setItem('gym_token', newToken);
-    localStorage.setItem('gym_user', newUsername);
     setToken(newToken);
     setUsername(newUsername);
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('gym_token');
-    localStorage.removeItem('gym_user');
+    authService.logout();
     setToken(null);
     setUsername('');
     if (wsRef.current) {
@@ -325,78 +326,124 @@ export const App: React.FC = () => {
     setTelemetryData(null);
   };
 
-  if (!token) {
-    return <Login onLoginSuccess={handleLoginSuccess} />;
-  }
-
   return (
     <Router>
-      <div className="flex bg-gym-dark min-h-screen">
-        <Sidebar espConnected={effectiveEspConnected} />
-        
-        <div className="flex-1 flex flex-col min-h-screen">
-          <Header 
-            username={username} 
-            espConnected={effectiveEspConnected} 
-            demoMode={demoMode} 
-            setDemoMode={setDemoMode} 
-            onLogout={handleLogout}
-          />
-          
-          <main className="flex-1 px-8 py-6 overflow-y-auto">
-            <Routes>
-              <Route path="/" element={<LandingPage />} />
-              <Route 
-                path="/dashboard" 
-                element={
-                  <Dashboard 
-                    activeSession={activeSession} 
-                    triggerSimStart={triggerSimStart} 
-                    detectionState={detectionState}
-                  />
-                } 
-              />
-              <Route 
-                path="/live" 
-                element={
-                  <LiveWorkout 
-                    activeSession={activeSession} 
-                    telemetryData={telemetryData} 
-                    wsSend={wsSend} 
-                    triggerSimStart={triggerSimStart}
-                    triggerSimStop={triggerSimStop}
-                    triggerSimReset={triggerSimReset}
-                    detectionState={detectionState}
-                    demoMode={demoMode}
-                    setDemoMode={setDemoMode}
-                  />
-                } 
-              />
-              <Route 
-                path="/coach-comments" 
-                element={<CoachComments detectionState={detectionState} />} 
-              />
-              <Route path="/exercises" element={<ExerciseDetection />} />
-              <Route path="/analytics" element={<Analytics />} />
-              <Route path="/history" element={<WorkoutHistory />} />
-              <Route 
-                path="/sensors" 
-                element={
-                  <SensorMonitoring 
+      <Routes>
+        {/* Public Authentication Routes */}
+        <Route 
+          path="/login" 
+          element={
+            token ? (
+              <Navigate to="/dashboard" replace />
+            ) : (
+              <Login onLoginSuccess={handleLoginSuccess} />
+            )
+          } 
+        />
+        <Route 
+          path="/register" 
+          element={
+            token ? (
+              <Navigate to="/dashboard" replace />
+            ) : (
+              <Register onLoginSuccess={handleLoginSuccess} />
+            )
+          } 
+        />
+        <Route 
+          path="/forgot-password" 
+          element={
+            token ? (
+              <Navigate to="/dashboard" replace />
+            ) : (
+              <ForgotPassword />
+            )
+          } 
+        />
+
+        {/* Protected Application Routes */}
+        <Route
+          path="/*"
+          element={
+            !token ? (
+              <Navigate to="/login" replace />
+            ) : (
+              <div className="flex bg-gym-dark min-h-screen">
+                <Sidebar
+                  espConnected={effectiveEspConnected}
+                  onLogout={handleLogout}
+                  mobileOpen={mobileNavOpen}
+                  setMobileOpen={setMobileNavOpen}
+                />
+                
+                <div className="flex-1 flex flex-col min-h-screen min-w-0">
+                  <Header 
+                    username={username} 
                     espConnected={effectiveEspConnected} 
-                    telemetryData={telemetryData} 
-                    espPowered={espPowered}
-                    onToggleEspPower={handleToggleEspPower}
+                    demoMode={demoMode} 
+                    setDemoMode={setDemoMode} 
+                    onLogout={handleLogout}
+                    onToggleMobileNav={() => setMobileNavOpen(prev => !prev)}
                   />
-                } 
-              />
-              <Route path="/trainer" element={<TrainerDashboard />} />
-              <Route path="/profile" element={<ProfileSettings />} />
-              <Route path="*" element={<Navigate to="/" />} />
-            </Routes>
-          </main>
-        </div>
-      </div>
+                  
+                  <main className="flex-1 px-8 py-6 overflow-y-auto">
+                    <Routes>
+                      <Route path="/" element={<LandingPage />} />
+                      <Route 
+                        path="/dashboard" 
+                        element={
+                          <Dashboard 
+                            activeSession={activeSession} 
+                            triggerSimStart={triggerSimStart} 
+                            detectionState={detectionState}
+                          />
+                        } 
+                      />
+                      <Route 
+                        path="/live" 
+                        element={
+                          <LiveWorkout 
+                            activeSession={activeSession} 
+                            telemetryData={telemetryData} 
+                            wsSend={wsSend} 
+                            triggerSimStart={triggerSimStart}
+                            triggerSimStop={triggerSimStop}
+                            triggerSimReset={triggerSimReset}
+                            detectionState={detectionState}
+                            demoMode={demoMode}
+                            setDemoMode={setDemoMode}
+                          />
+                        } 
+                      />
+                      <Route 
+                        path="/coach-comments" 
+                        element={<CoachComments detectionState={detectionState} />} 
+                      />
+                      <Route path="/exercises" element={<ExerciseDetection />} />
+                      <Route path="/analytics" element={<Analytics />} />
+                      <Route path="/history" element={<WorkoutHistory />} />
+                      <Route 
+                        path="/sensors" 
+                        element={
+                          <SensorMonitoring 
+                            espConnected={effectiveEspConnected} 
+                            telemetryData={telemetryData} 
+                            espPowered={espPowered}
+                            onToggleEspPower={handleToggleEspPower}
+                          />
+                        } 
+                      />
+                      <Route path="/trainer" element={<TrainerDashboard />} />
+                      <Route path="/profile" element={<ProfileSettings />} />
+                      <Route path="*" element={<Navigate to="/dashboard" replace />} />
+                    </Routes>
+                  </main>
+                </div>
+              </div>
+            )
+          }
+        />
+      </Routes>
     </Router>
   );
 };

@@ -17,15 +17,15 @@ export const CoachComments: React.FC<CoachCommentsProps> = ({ detectionState }) 
   const getStatusColor = (status: string, alpha: number = 1) => {
     switch (status) {
       case 'PROPER_WORKOUT':
-        return `rgba(34, 197, 94, ${alpha})`; // Green
+        return `rgba(255, 122, 0, ${alpha})`; // Primary Orange
       case 'IMPROPER_WORKOUT':
-        return `rgba(234, 179, 8, ${alpha})`; // Yellow
+        return `rgba(250, 204, 21, ${alpha})`; // Neon Yellow (warning)
       case 'NON_WORKOUT':
-        return `rgba(239, 68, 68, ${alpha})`; // Red
+        return `rgba(255, 77, 90, ${alpha})`; // Neon Red (error)
       case 'RESTING':
-        return `rgba(59, 130, 246, ${alpha})`; // Blue
+        return `rgba(56, 189, 248, ${alpha})`; // Cyan (info)
       case 'ANALYZING':
-        return `rgba(148, 163, 184, ${alpha})`; // Gray
+        return `rgba(148, 163, 184, ${alpha})`; // Slate
       default:
         return `rgba(148, 163, 184, ${alpha})`;
     }
@@ -82,9 +82,9 @@ export const CoachComments: React.FC<CoachCommentsProps> = ({ detectionState }) 
         <div className="lg:col-span-2 space-y-6">
           
           {/* 1. CURRENT COACH COMMENT CARD */}
-          <div className="glass-panel p-6 border border-gym-border/80 relative overflow-hidden">
-            <h3 className="font-display font-bold text-xs uppercase tracking-widest text-gym-muted mb-4">
-              SMART COACH
+          <div className="glass-panel p-6 border border-gym-border relative overflow-hidden">
+            <h3 className="font-display font-bold text-xs uppercase tracking-widest text-gym-accent mb-4 flex items-center gap-2">
+              <span>⚡ SMART COACH REAL-TIME EVALUATION</span>
             </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
@@ -94,9 +94,10 @@ export const CoachComments: React.FC<CoachCommentsProps> = ({ detectionState }) 
                 <div 
                   className="px-4 py-2.5 rounded-xl border text-center font-display font-black text-sm max-w-max uppercase tracking-wider"
                   style={{
-                    backgroundColor: getStatusColor(detectionState.status, 0.05),
-                    borderColor: getStatusColor(detectionState.status, 0.35),
-                    color: getStatusColor(detectionState.status, 1)
+                    backgroundColor: getStatusColor(detectionState.status, 0.08),
+                    borderColor: getStatusColor(detectionState.status, 0.4),
+                    color: getStatusColor(detectionState.status, 1),
+                    boxShadow: `0 4px 16px ${getStatusColor(detectionState.status, 0.15)}`
                   }}
                 >
                   {getStatusLabel(detectionState.status)}
@@ -113,23 +114,23 @@ export const CoachComments: React.FC<CoachCommentsProps> = ({ detectionState }) 
               </div>
 
               {/* Form metrics */}
-              <div className="space-y-4 bg-gym-card/40 border border-gym-border/50 p-5 rounded-2xl">
+              <div className="space-y-4 bg-gym-cardAlt/80 border border-gym-border p-5 rounded-2xl">
                 <div className="space-y-2">
                   <div className="flex justify-between items-center text-[10px] font-display font-bold uppercase text-gym-muted">
                     <span>Form Score</span>
-                    <span className="text-gym-accent font-mono text-sm">
+                    <span className="text-gym-accent font-mono text-base font-bold">
                       {isNaN(detectionState.formScore) ? 0 : Math.round(detectionState.formScore)}%
                     </span>
                   </div>
-                  <div className="h-2 w-full bg-gym-border/60 rounded-full overflow-hidden">
+                  <div className="h-2.5 w-full bg-gym-border/80 rounded-full overflow-hidden">
                     <div 
-                      className="h-full rounded-full bg-gym-accent transition-all duration-500"
+                      className="h-full rounded-full bg-gradient-to-r from-gym-accent to-gym-accentHover transition-all duration-500 shadow-[0_0_8px_rgba(255,122,0,0.6)]"
                       style={{ width: `${isNaN(detectionState.formScore) ? 0 : Math.max(0, Math.min(100, Math.round(detectionState.formScore)))}%` }}
                     />
                   </div>
                 </div>
 
-                <div className="flex justify-between items-center text-xs font-display border-t border-gym-border/30 pt-3">
+                <div className="flex justify-between items-center text-xs font-display border-t border-gym-border/40 pt-3">
                   <span className="text-gym-muted font-bold uppercase text-[10px]">Confidence:</span>
                   <span className="text-gym-text font-black text-sm" style={{ color: getStatusColor(detectionState.status) }}>
                     {isNaN(detectionState.confidence) ? 50 : Math.round(detectionState.confidence)}%
@@ -139,7 +140,7 @@ export const CoachComments: React.FC<CoachCommentsProps> = ({ detectionState }) 
 
             </div>
 
-            <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-gym-accent to-gym-accentBlue" />
+            <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-gym-accent to-gym-accentHover" />
           </div>
 
           {/* 2 & 3. WHAT TO IMPROVE and TRAINING RECOMMENDATIONS */}

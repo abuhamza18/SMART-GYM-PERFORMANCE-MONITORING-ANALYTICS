@@ -1,239 +1,240 @@
 import React, { useState } from 'react';
-import { Dumbbell, User, Lock, Mail, AlertTriangle, ShieldCheck } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { AuthLayout } from '../components/AuthLayout';
+import { authService } from '../services/auth';
 
 interface LoginProps {
   onLoginSuccess: (token: string, username: string) => void;
 }
 
 export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
-  const [isRegister, setIsRegister] = useState(false);
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState('');
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  // Helper for demo account fallback when offline or deployed as static SPA without API backend
-  const handleClientFallbackAuth = (isReg: boolean, userStr: string, passStr: string) => {
-    const seedPasswords: Record<string, string> = {
-      'Mohamed': 'password123',
-      'Sarah Chen': 'password123',
-      'Alex Rivera': 'password123',
-      'Emma Watson': 'password123',
-      'Marcus Vance': 'password123'
-    };
-
-    if (isReg) {
-      const storedUsers = JSON.parse(localStorage.getItem('registered_users') || '{}');
-      storedUsers[userStr] = passStr;
-      localStorage.setItem('registered_users', JSON.stringify(storedUsers));
-      setSuccess('Registration successful! Please login with your security password.');
-      setIsRegister(false);
-      setPassword('');
-      return;
+  const validateForm = () => {
+    if (!email.trim()) {
+      setError('Please enter your email address.');
+      return false;
     }
-
-    const storedUsers = JSON.parse(localStorage.getItem('registered_users') || '{}');
-    const validPassword = seedPasswords[userStr] || storedUsers[userStr];
-
-    if (validPassword && validPassword === passStr) {
-      const demoToken = 'demo-token-' + btoa(userStr + ':' + Date.now());
-      onLoginSuccess(demoToken, userStr);
-    } else if (seedPasswords[userStr] || storedUsers[userStr]) {
-      throw new Error('Invalid security password for athlete username: ' + userStr);
-    } else {
-      if (passStr === 'password123') {
-        const demoToken = 'demo-token-' + btoa(userStr + ':' + Date.now());
-        onLoginSuccess(demoToken, userStr);
-      } else {
-        throw new Error('Invalid credentials. (Hint: Use demo password "password123")');
-      }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email.trim())) {
+      setError('Please enter a valid email address.');
+      return false;
     }
+    if (!password) {
+      setError('Please enter your password.');
+      return false;
+    }
+    return true;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    setSuccess('');
+    if (!validateForm()) return;
     setLoading(true);
-
-    const apiBase = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
-    const endpoint = isRegister ? '/api/register' : '/api/login';
-    const url = apiBase ? `${apiBase}${endpoint}` : endpoint;
-    const body = isRegister ? { username, password, email } : { username, password };
-
     try {
-      let res: Response | null = null;
-      try {
-        res = await fetch(url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(body)
-        });
-      } catch (netErr) {
-        console.warn('Backend API fetch error, using local auth fallback:', netErr);
-      }
-
-      if (res) {
-        const contentType = res.headers.get('content-type') || '';
-        if (contentType.includes('application/json')) {
-          try {
-            const data = await res.json();
-            if (!res.ok) {
-              throw new Error(data.error || data.message || `Authentication failed (${res.status})`);
-            }
-            if (isRegister) {
-              setSuccess('Registration successful! Please login.');
-              setIsRegister(false);
-              setPassword('');
-            } else {
-              onLoginSuccess(data.token, data.username || username);
-            }
-            return;
-          } catch (jsonErr: any) {
-            if (jsonErr.message && !jsonErr.message.includes('JSON')) {
-              throw jsonErr;
-            }
-            console.warn('API returned non-JSON despite application/json header:', jsonErr);
-          }
-        } else {
-          const rawText = await res.text().catch(() => '');
-          console.warn('Server returned non-JSON response:', rawText);
-        }
-      }
-
-      // Fallback auth if server API is not available or returned non-JSON (e.g. 404 HTML SPA page on Vercel)
-      handleClientFallbackAuth(isRegister, username, password);
-
+      const data = await authService.login(email.trim(), password, rememberMe);
+      onLoginSuccess(data.token, data.username);
+      navigate('/dashboard', { replace: true });
     } catch (err: any) {
-      setError(err.message || 'Authentication error. Please check your credentials.');
+      setError(err.message || 'Invalid email or password. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gym-dark flex flex-col justify-center items-center px-4 relative overflow-hidden tech-grid-bg">
-      <div className="absolute top-0 right-0 w-96 h-96 bg-gym-accent/5 rounded-full blur-3xl -z-10" />
-      <div className="absolute bottom-0 left-0 w-96 h-96 bg-gym-accentBlue/5 rounded-full blur-3xl -z-10" />
+    <AuthLayout>
+      <div className="auth-card">
 
-      {/* Main Login Card */}
-      <div className="glass-panel p-8 w-full max-w-md space-y-8 animate-slide-up relative">
-        
-        {/* Brand logo header */}
-        <div className="text-center space-y-2">
-          <div className="inline-flex bg-gym-accent/15 p-3 rounded-2xl border border-gym-accent/30 text-gym-accent mb-2">
-            <Dumbbell className="w-8 h-8 animate-pulse-slow" />
+        {/* ── Top Animated Login Icon & Typography ─────────────────────── */}
+        <div style={{ textAlign: 'center', marginBottom: '34px' }}>
+          <div className="auth-icon-badge-wrapper">
+            <div className="auth-icon-badge">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FF7A00" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="3" ry="3" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                <circle cx="12" cy="16" r="1.5" fill="#FF7A00" stroke="none" />
+                <path d="M12 17.5v1.5" strokeWidth="2" />
+              </svg>
+            </div>
           </div>
-          <h2 className="font-display font-black text-2xl tracking-wider text-gym-text">
-            SMART <span className="text-gym-accent">GYM</span> TELEMETRY
-          </h2>
-          <p className="text-xs text-gym-muted font-display uppercase tracking-widest leading-none mt-1">
-            Kinematic Calibration Interface
+
+          <h1 className="auth-title">
+            Welcome Back
+          </h1>
+          <p className="auth-subtitle">
+            Sign in to access your workout metrics & live telemetry.
           </p>
         </div>
 
-        {/* Action Form */}
-        <form onSubmit={handleSubmit} className="space-y-5">
-          {error && (
-            <div className="bg-gym-accentRed/5 border border-gym-accentRed/30 p-3.5 rounded-xl flex items-start gap-2.5 text-xs text-gym-accentRed leading-normal">
-              <AlertTriangle className="w-4.5 h-4.5 flex-shrink-0 mt-0.5" />
-              <span>{error}</span>
-            </div>
-          )}
+        {/* ── Error Banner ─────────────────────────────────────────────── */}
+        {error && (
+          <div className="auth-error" role="alert">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FF4D5A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: '1px' }}>
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="8" x2="12" y2="12" />
+              <line x1="12" y1="16" x2="12.01" y2="16" />
+            </svg>
+            <span style={{ fontSize: '13.5px', fontWeight: 500, color: '#FF4D5A', lineHeight: 1.5 }}>
+              {error}
+            </span>
+          </div>
+        )}
 
-          {success && (
-            <div className="bg-gym-accent/5 border border-gym-accent/30 p-3.5 rounded-xl flex items-start gap-2.5 text-xs text-gym-accent leading-normal">
-              <ShieldCheck className="w-4.5 h-4.5 flex-shrink-0 mt-0.5" />
-              <span>{success}</span>
-            </div>
-          )}
+        {/* ── Form ─────────────────────────────────────────────────────── */}
+        <form onSubmit={handleSubmit} noValidate>
 
-          <div className="space-y-4">
-            {/* Username */}
-            <div className="form-group space-y-1.5">
-              <label className="text-[10px] uppercase font-display font-bold text-gym-muted">Username</label>
-              <div className="flex items-center gap-2.5 bg-gym-card border border-gym-border rounded-xl px-3.5 py-2.5 focus-within:border-gym-accent transition-colors">
-                <User className="w-4 h-4 text-gym-muted" />
-                <input
-                  type="text"
-                  required
-                  placeholder="Demo Username: Mohamed"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  className="bg-transparent text-xs text-gym-text outline-none w-full"
-                />
+          {/* Email Address */}
+          <div className="auth-field">
+            <label htmlFor="login-email" className="auth-label">
+              Email Address
+            </label>
+            <div className="auth-input-group">
+              <div className="auth-input-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                  <polyline points="22,6 12,13 2,6" />
+                </svg>
               </div>
-            </div>
-
-            {/* Email (only if register) */}
-            {isRegister && (
-              <div className="form-group space-y-1.5 animate-fade-in">
-                <label className="text-[10px] uppercase font-display font-bold text-gym-muted">Email Address</label>
-                <div className="flex items-center gap-2.5 bg-gym-card border border-gym-border rounded-xl px-3.5 py-2.5 focus-within:border-gym-accent transition-colors">
-                  <Mail className="w-4 h-4 text-gym-muted" />
-                  <input
-                    type="email"
-                    required
-                    placeholder="name@example.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="bg-transparent text-xs text-gym-text outline-none w-full"
-                  />
-                </div>
-              </div>
-            )}
-
-            {/* Password */}
-            <div className="form-group space-y-1.5">
-              <label className="text-[10px] uppercase font-display font-bold text-gym-muted">Security Password</label>
-              <div className="flex items-center gap-2.5 bg-gym-card border border-gym-border rounded-xl px-3.5 py-2.5 focus-within:border-gym-accent transition-colors">
-                <Lock className="w-4 h-4 text-gym-muted" />
-                <input
-                  type="password"
-                  required
-                  placeholder="Demo Password: password123"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="bg-transparent text-xs text-gym-text outline-none w-full"
-                />
-              </div>
+              <input
+                id="login-email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                required
+                value={email}
+                onChange={e => { setEmail(e.target.value); if (error) setError(''); }}
+                placeholder="name@example.com"
+                className="auth-input"
+              />
             </div>
           </div>
 
+          {/* Password */}
+          <div className="auth-field" style={{ marginBottom: '18px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+              <label htmlFor="login-password" className="auth-label" style={{ margin: 0 }}>
+                Password
+              </label>
+              <Link to="/forgot-password" className="auth-link" style={{ fontSize: '12.5px' }}>
+                Forgot Password?
+              </Link>
+            </div>
+            <div className="auth-input-group">
+              <div className="auth-input-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                </svg>
+              </div>
+              <input
+                id="login-password"
+                name="password"
+                type={showPassword ? 'text' : 'password'}
+                autoComplete="current-password"
+                required
+                value={password}
+                onChange={e => { setPassword(e.target.value); if (error) setError(''); }}
+                placeholder="Enter your password"
+                className="auth-input"
+                style={{ paddingRight: '48px' }}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                className="auth-eye-btn"
+                title={showPassword ? 'Hide password' : 'Show password'}
+              >
+                {showPassword ? (
+                  <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
+                    <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
+                    <line x1="1" y1="1" x2="23" y2="23" />
+                  </svg>
+                ) : (
+                  <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                    <circle cx="12" cy="12" r="3" />
+                  </svg>
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* Remember Me Custom Checkbox */}
+          <div style={{ display: 'flex', alignItems: 'center', marginBottom: '28px' }}>
+            <label className="auth-checkbox-label">
+              <div className={`auth-custom-checkbox ${rememberMe ? 'checked' : ''}`}>
+                {rememberMe && (
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0B0B0D" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                )}
+              </div>
+              <input
+                type="checkbox"
+                checked={rememberMe}
+                onChange={e => setRememberMe(e.target.checked)}
+                style={{ position: 'absolute', opacity: 0, pointerEvents: 'none' }}
+              />
+              <span style={{ fontSize: '13.5px', color: '#A1A1AA', fontWeight: 500, letterSpacing: '0.01em' }}>
+                Remember me on this device
+              </span>
+            </label>
+          </div>
+
+          {/* Modern Orange Sign In Button */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-gym-accent hover:bg-gym-accent/90 text-gym-dark font-display font-bold py-3.5 rounded-xl text-xs transition-colors shadow-lg shadow-gym-accent/15 mt-2"
+            className="auth-btn-primary"
+            id="login-submit-btn"
           >
-            {loading ? 'Processing telemetry...' : isRegister ? 'Register Account' : 'Authenticate & Unlock'}
+            {loading ? (
+              <>
+                <svg className="spin" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                  <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+                </svg>
+                <span>Signing in...</span>
+              </>
+            ) : (
+              <>
+                <span>Sign In to Account</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                  <polyline points="12 5 19 12 12 19" />
+                </svg>
+              </>
+            )}
           </button>
         </form>
 
-        {/* Toggle Mode */}
-        <div className="text-center pt-2 border-t border-gym-border text-xs text-gym-muted">
-          {isRegister ? (
-            <button 
-              onClick={() => { setIsRegister(false); setError(''); }}
-              className="text-gym-accentBlue font-bold hover:underline"
-            >
-              Sign in with existing credentials
-            </button>
-          ) : (
-            <span>
-              New microcontroller node?{' '}
-              <button 
-                onClick={() => { setIsRegister(true); setError(''); }}
-                className="text-gym-accent font-bold hover:underline"
-              >
-                Register Athlete profile
-              </button>
-            </span>
-          )}
+        {/* ── Sign Up Switcher Link ────────────────────────────────────── */}
+        <div style={{
+          marginTop: '32px',
+          paddingTop: '24px',
+          borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+          textAlign: 'center',
+        }}>
+          <p style={{ margin: 0, fontSize: '14px', color: '#A1A1AA' }}>
+            Don't have an account?{' '}
+            <Link to="/register" className="auth-link">
+              <span>Create Account</span>
+              <span className="auth-link-arrow">→</span>
+            </Link>
+          </p>
         </div>
-
       </div>
-    </div>
+    </AuthLayout>
   );
 };
+

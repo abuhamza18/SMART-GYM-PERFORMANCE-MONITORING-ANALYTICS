@@ -119,11 +119,11 @@ export const WorkoutHistory: React.FC = () => {
       </div>
 
       {/* History Grid Table */}
-      <div className="glass-panel overflow-hidden">
+      <div className="glass-panel overflow-hidden border border-gym-border shadow-xl">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-gym-border bg-gym-card/45 text-[10px] uppercase font-display tracking-widest text-gym-muted font-bold">
+              <tr className="border-b border-gym-border bg-gym-cardAlt/80 text-[10px] uppercase font-display tracking-widest text-gym-muted font-bold">
                 <th className="py-4 px-6">Date</th>
                 <th className="py-4 px-6">Exercise</th>
                 <th className="py-4 px-6">Sets</th>
@@ -134,31 +134,34 @@ export const WorkoutHistory: React.FC = () => {
                 <th className="py-4 px-6">Trainer Notes</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gym-border text-xs text-gym-muted">
+            <tbody className="divide-y divide-gym-border/60 text-xs text-gym-muted">
               {loading ? (
                 <tr>
-                  <td colSpan={8} className="py-8 text-center text-gym-muted">
-                    Querying SQLite logs...
+                  <td colSpan={8} className="py-12 text-center text-gym-muted">
+                    <div className="flex items-center justify-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-gym-accent animate-ping" />
+                      <span>Querying telemetry logs...</span>
+                    </div>
                   </td>
                 </tr>
               ) : filteredWorkouts.length > 0 ? (
                 filteredWorkouts.map((w, idx) => (
-                  <tr key={idx} className="hover:bg-slate-800/20 transition-colors">
+                  <tr key={idx} className="hover:bg-gym-cardAlt/60 transition-colors">
                     <td className="py-4.5 px-6 font-mono text-[11px] text-gym-text">{w.date}</td>
                     <td className="py-4.5 px-6 font-display font-bold text-gym-text uppercase tracking-wide">
                       {w.exercise}
                     </td>
                     <td className="py-4.5 px-6 font-semibold text-gym-text">{w.sets}</td>
                     <td className="py-4.5 px-6 font-semibold text-gym-text">{w.reps}</td>
-                    <td className="py-4.5 px-6 font-semibold text-gym-text">{w.weight} kg</td>
+                    <td className="py-4.5 px-6 font-semibold text-gym-accent">{w.weight} kg</td>
                     <td className="py-4.5 px-6 font-mono text-[11px]">{w.duration}</td>
                     <td className="py-4.5 px-6">
-                      <span className={`inline-flex items-center gap-1.5 font-bold font-mono px-2 py-0.5 rounded-full border ${
+                      <span className={`inline-flex items-center gap-1.5 font-bold font-mono px-3 py-1 rounded-full border text-xs ${
                         (w.form_score || 85) >= 90 
-                          ? 'border-gym-accent/30 text-gym-accent bg-gym-accent/5' 
+                          ? 'border-gym-accent/30 text-gym-accent bg-gym-accent/8 shadow-[0_0_8px_rgba(255,122,0,0.15)]' 
                           : (w.form_score || 85) >= 80 
-                            ? 'border-gym-accentBlue/30 text-gym-accentBlue bg-gym-accentBlue/5' 
-                            : 'border-gym-accentRed/30 text-gym-accentRed bg-gym-accentRed/5'
+                            ? 'border-gym-accentBlue/30 text-gym-accentBlue bg-gym-accentBlue/8' 
+                            : 'border-gym-accentRed/30 text-gym-accentRed bg-gym-accentRed/8'
                       }`}>
                         {(w.form_score || 85)}%
                       </span>
@@ -177,7 +180,7 @@ export const WorkoutHistory: React.FC = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={8} className="py-8 text-center text-gym-muted">
+                  <td colSpan={8} className="py-12 text-center text-gym-muted">
                     No matching workout logs found.
                   </td>
                 </tr>

@@ -8,11 +8,38 @@ const app = express();
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
+// Enable CORS for all origins, methods, and headers
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  next();
+});
+
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../public')));
 
 // Mount API routes
 app.use('/api', routes);
+
+// Handle unmatched /api requests with 404 JSON (prevent falling through to HTML index)
+app.all('/api/*', (req, res) => {
+  res.status(404).json({ error: 'API endpoint not found' });
+});
+
+// JSON parsing & error handler for API routes
+app.use((err, req, res, next) => {
+  if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
+    return res.status(400).json({ error: 'Malformed JSON payload' });
+  }
+  if (req.path.startsWith('/api')) {
+    return res.status(err.status || 500).json({ error: err.message || 'Internal Server Error' });
+  }
+  next(err);
+});
 
 // Serve the index.html for dashboard/login redirection
 app.get('*', (req, res, next) => {

@@ -5,6 +5,8 @@
   "main": "server/server.js",
   "scripts": {
     "start": "node server/server.js",
+    "dev": "npm --prefix client run dev",
+    "build": "npm --prefix client run build",
     "simulator": "node server/esp32_simulator.js",
     "reset-db": "node server/reset_db.js"
   },

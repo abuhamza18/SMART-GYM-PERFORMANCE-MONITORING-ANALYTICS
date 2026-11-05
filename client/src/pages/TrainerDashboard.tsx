@@ -241,31 +241,31 @@ export const TrainerDashboard: React.FC = () => {
           {selectedUser && (
             <>
               {/* Client metrics card */}
-              <div className="glass-panel p-6 grid grid-cols-2 md:grid-cols-4 gap-6 items-center">
+              <div className="glass-panel p-6 grid grid-cols-2 md:grid-cols-4 gap-4 items-center border border-gym-border">
                 <div>
                   <span className="text-[10px] text-gym-muted uppercase font-display font-bold leading-none">Athlete Profile</span>
                   <h4 className="text-lg font-black text-gym-text font-display uppercase tracking-wide mt-1.5">{selectedUser.username}</h4>
-                  <span className="text-[10px] text-gym-muted">Weight: {selectedUser.weight_kg} kg</span>
+                  <span className="text-[11px] text-gym-muted font-sans mt-0.5 block">Weight: {selectedUser.weight_kg} kg</span>
                 </div>
-                <div className="bg-gym-card/50 p-3 rounded-xl border border-gym-border text-center">
-                  <div className="text-[9px] text-gym-muted font-display uppercase leading-none">Reps Lifted</div>
-                  <div className="text-base font-bold text-gym-text mt-1 flex items-center justify-center gap-1">
+                <div className="bg-gym-cardAlt/80 p-3 rounded-xl border border-gym-border text-center">
+                  <div className="text-[9px] text-gym-muted font-display uppercase font-bold leading-none">Reps Lifted</div>
+                  <div className="text-base font-bold text-gym-text mt-1.5 flex items-center justify-center gap-1.5">
                     <Hash className="w-4 h-4 text-gym-accentBlue" />
-                    {stats.reps}
+                    <span>{stats.reps}</span>
                   </div>
                 </div>
-                <div className="bg-gym-card/50 p-3 rounded-xl border border-gym-border text-center">
-                  <div className="text-[9px] text-gym-muted font-display uppercase leading-none">Sets Lifted</div>
-                  <div className="text-base font-bold text-gym-text mt-1 flex items-center justify-center gap-1">
+                <div className="bg-gym-cardAlt/80 p-3 rounded-xl border border-gym-border text-center">
+                  <div className="text-[9px] text-gym-muted font-display uppercase font-bold leading-none">Sets Lifted</div>
+                  <div className="text-base font-bold text-gym-text mt-1.5 flex items-center justify-center gap-1.5">
                     <Layers className="w-4 h-4 text-gym-accentYellow" />
-                    {stats.sets}
+                    <span>{stats.sets}</span>
                   </div>
                 </div>
-                <div className="bg-gym-card/50 p-3 rounded-xl border border-gym-border text-center">
-                  <div className="text-[9px] text-gym-muted font-display uppercase leading-none">Average Form</div>
-                  <div className="text-base font-bold text-gym-text mt-1 flex items-center justify-center gap-1">
+                <div className="bg-gym-cardAlt/80 p-3 rounded-xl border border-gym-border text-center">
+                  <div className="text-[9px] text-gym-muted font-display uppercase font-bold leading-none">Average Form</div>
+                  <div className="text-base font-bold text-gym-accent mt-1.5 flex items-center justify-center gap-1.5">
                     <Award className="w-4 h-4 text-gym-accent" />
-                    {stats.avgForm}%
+                    <span>{stats.avgForm}%</span>
                   </div>
                 </div>
               </div>

@@ -88,11 +88,11 @@ export const LiveWorkout: React.FC<LiveWorkoutProps> = ({
       const w = canvas.width;
       const h = canvas.height;
       
-      ctx.fillStyle = '#05070c';
+      ctx.fillStyle = '#0B0B0D';
       ctx.fillRect(0, 0, w, h);
 
       // Draw Grid
-      ctx.strokeStyle = 'rgba(30, 41, 59, 0.4)';
+      ctx.strokeStyle = 'rgba(48, 48, 54, 0.6)';
       ctx.lineWidth = 0.5;
       const step = 20;
       for (let x = 0; x < w; x += step) {
@@ -109,7 +109,7 @@ export const LiveWorkout: React.FC<LiveWorkoutProps> = ({
       }
 
       // Draw Center Baseline
-      ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+      ctx.strokeStyle = 'rgba(245, 245, 245, 0.08)';
       ctx.beginPath();
       ctx.moveTo(0, h / 2);
       ctx.lineTo(w, h / 2);
@@ -118,7 +118,7 @@ export const LiveWorkout: React.FC<LiveWorkoutProps> = ({
       const pts = pointsRef.current;
       if (pts.length > 1) {
         // Paint Accel Y Wave (Cyan)
-        ctx.strokeStyle = '#0ea5e9';
+        ctx.strokeStyle = '#38BDF8';
         ctx.lineWidth = 2.5;
         ctx.beginPath();
         pts.forEach((pt, idx) => {
@@ -130,8 +130,8 @@ export const LiveWorkout: React.FC<LiveWorkoutProps> = ({
         });
         ctx.stroke();
 
-        // Paint Load Cell Wave (Neon Green)
-        ctx.strokeStyle = '#10b981';
+        // Paint Load Cell Wave (Primary Orange)
+        ctx.strokeStyle = '#FF7A00';
         ctx.lineWidth = 2;
         ctx.beginPath();
         pts.forEach((pt, idx) => {
@@ -145,9 +145,9 @@ export const LiveWorkout: React.FC<LiveWorkoutProps> = ({
       }
 
       ctx.font = '9px Orbitron';
-      ctx.fillStyle = '#0ea5e9';
+      ctx.fillStyle = '#38BDF8';
       ctx.fillText('ACC Y (Kinematics)', 10, 15);
-      ctx.fillStyle = '#10b981';
+      ctx.fillStyle = '#FF7A00';
       ctx.fillText('FORCE LOAD CELL', 10, 28);
 
       animId = requestAnimationFrame(draw);
@@ -265,19 +265,19 @@ export const LiveWorkout: React.FC<LiveWorkoutProps> = ({
   const getStatusColor = (status: string, alpha: number = 1) => {
     switch (status) {
       case 'PROPER_WORKOUT':
-        return `rgba(16, 185, 129, ${alpha})`; // Green
+        return `rgba(255, 122, 0, ${alpha})`; // Primary Orange
       case 'IMPROPER_WORKOUT':
-        return `rgba(245, 158, 11, ${alpha})`; // Yellow
+        return `rgba(250, 204, 21, ${alpha})`; // Neon Yellow (warning)
       case 'NON_WORKOUT':
-        return `rgba(239, 68, 68, ${alpha})`; // Red
+        return `rgba(255, 77, 90, ${alpha})`; // Neon Red (error)
       case 'RESTING':
-        return `rgba(59, 130, 246, ${alpha})`; // Blue
+        return `rgba(56, 189, 248, ${alpha})`; // Cyan (info)
       case 'ANALYZING':
         return `rgba(148, 163, 184, ${alpha})`; // Gray
       case 'SENSOR_DISCONNECTED':
-        return `rgba(249, 115, 22, ${alpha})`; // Orange/Warning
+        return `rgba(250, 204, 21, ${alpha})`; // Warning Yellow
       default:
-        return `rgba(100, 116, 139, ${alpha})`; // Gray fallback
+        return `rgba(148, 163, 184, ${alpha})`; // Gray fallback
     }
   };
 
@@ -362,7 +362,7 @@ export const LiveWorkout: React.FC<LiveWorkoutProps> = ({
               <div className="flex gap-4">
                 <button
                   onClick={() => { setSaveModalOpen(false); triggerSimReset(); setSessionSummary(null); }}
-                  className="flex-1 border border-gym-border hover:bg-slate-800 text-gym-muted font-display py-2.5 rounded-xl text-xs transition-colors"
+                  className="flex-1 border border-gym-border hover:bg-gym-cardAlt text-gym-muted font-display py-2.5 rounded-xl text-xs transition-colors"
                 >
                   Discard Log
                 </button>
@@ -385,37 +385,45 @@ export const LiveWorkout: React.FC<LiveWorkoutProps> = ({
         <div className="lg:col-span-7 space-y-6">
           
           {/* Live Workout Stats Panel */}
-          <div className="glass-panel p-5 space-y-4 border border-gym-border/50">
-            <h3 className="font-display font-bold text-sm uppercase tracking-wider text-gym-accent border-b border-gym-border/30 pb-2.5">
-              🏋️‍♂️ LIVE WORKOUT SESSION
-            </h3>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-center font-display">
-              <div className="bg-gym-card/45 border border-gym-border/50 p-3 rounded-xl">
-                <div className="text-[10px] text-gym-muted uppercase font-bold leading-none">Exercise</div>
-                <div className="text-sm font-black text-gym-text mt-1.5 truncate">{activeSession.exercise}</div>
+          <div className="glass-panel p-6 space-y-4 border border-gym-border">
+            <div className="flex items-center justify-between border-b border-gym-border/40 pb-3">
+              <h3 className="font-display font-bold text-sm uppercase tracking-wider text-gym-accent flex items-center gap-2">
+                <span>🏋️‍♂️ LIVE WORKOUT TELEMETRY</span>
+              </h3>
+              <div className="flex items-center gap-2 text-xs font-mono text-gym-muted">
+                <span>TIMER:</span>
+                <span className="text-gym-accent font-bold text-sm bg-gym-cardAlt px-2.5 py-1 rounded-lg border border-gym-border">
+                  {activeSession.workoutTime || '00:00:00'}
+                </span>
               </div>
-              <div className="bg-gym-card/45 border border-gym-border/50 p-3 rounded-xl">
-                <div className="text-[10px] text-gym-muted uppercase font-bold leading-none">Reps Completed</div>
-                <div className="text-sm font-black text-gym-text mt-1.5">
-                  {activeSession.reps.toString().padStart(2, '0')} / 12
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-3.5 text-center font-display">
+              <div className="bg-gym-cardAlt/80 border border-gym-border p-3.5 rounded-2xl hover:border-gym-accent/30 transition-all">
+                <div className="text-[10px] text-gym-muted uppercase font-bold tracking-wider leading-none">Exercise</div>
+                <div className="text-base font-black text-gym-text mt-2 truncate">{activeSession.exercise}</div>
+              </div>
+              <div className="bg-gym-cardAlt/80 border border-gym-border p-3.5 rounded-2xl hover:border-gym-accent/30 transition-all">
+                <div className="text-[10px] text-gym-muted uppercase font-bold tracking-wider leading-none">Reps Completed</div>
+                <div className="text-2xl font-black text-gym-accent mt-1.5 leading-none">
+                  {activeSession.reps.toString().padStart(2, '0')}
                 </div>
               </div>
-              <div className="bg-gym-card/45 border border-gym-border/50 p-3 rounded-xl">
-                <div className="text-[10px] text-gym-muted uppercase font-bold leading-none">Current Set</div>
-                <div className="text-sm font-black text-gym-accentBlue mt-1.5">
-                  {activeSession.sets.toString().padStart(2, '0')} / 03
+              <div className="bg-gym-cardAlt/80 border border-gym-border p-3.5 rounded-2xl hover:border-gym-accent/30 transition-all">
+                <div className="text-[10px] text-gym-muted uppercase font-bold tracking-wider leading-none">Current Set</div>
+                <div className="text-2xl font-black text-gym-accentBlue mt-1.5 leading-none">
+                  {activeSession.sets.toString().padStart(2, '0')}
                 </div>
               </div>
-              <div className="bg-gym-card/45 border border-gym-border/50 p-3 rounded-xl">
-                <div className="text-[10px] text-gym-muted uppercase font-bold leading-none">Form Score</div>
-                <div className="text-sm font-black text-gym-accent mt-1.5">
+              <div className="bg-gym-cardAlt/80 border border-gym-border p-3.5 rounded-2xl hover:border-gym-accent/30 transition-all">
+                <div className="text-[10px] text-gym-muted uppercase font-bold tracking-wider leading-none">Form Score</div>
+                <div className="text-2xl font-black text-gym-text mt-1.5 leading-none">
                   {isNaN(detectionState.formScore) ? 0 : Math.max(0, Math.min(100, Math.round(detectionState.formScore)))}%
                 </div>
               </div>
-              <div className="bg-gym-card/45 border border-gym-border/50 p-3 rounded-xl col-span-2 md:col-span-1">
-                <div className="text-[10px] text-gym-muted uppercase font-bold leading-none">Current Load</div>
-                <div className="text-sm font-black text-gym-accentYellow mt-1.5">
-                  {telemetryData?.load != null ? telemetryData.load.toFixed(1) : '0.0'} kg
+              <div className="bg-gym-cardAlt/80 border border-gym-border p-3.5 rounded-2xl col-span-2 md:col-span-1 hover:border-gym-accent/30 transition-all">
+                <div className="text-[10px] text-gym-muted uppercase font-bold tracking-wider leading-none">Current Load</div>
+                <div className="text-2xl font-black text-gym-accentYellow mt-1.5 leading-none">
+                  {telemetryData?.load != null ? telemetryData.load.toFixed(1) : '0.0'} <span className="text-xs font-normal">kg</span>
                 </div>
               </div>
             </div>
@@ -439,7 +447,7 @@ export const LiveWorkout: React.FC<LiveWorkoutProps> = ({
                   <button 
                     onClick={() => setDemoMode(!demoMode)}
                     className={`w-9 h-5 rounded-full p-0.5 transition-colors duration-200 focus:outline-none ${
-                      demoMode ? 'bg-gym-accent' : 'bg-slate-700'
+                      demoMode ? 'bg-gym-accent' : 'bg-gym-cardAlt border border-gym-border'
                     }`}
                   >
                     <div className={`bg-gym-dark w-4 h-4 rounded-full shadow-md transform duration-200 ${
@@ -500,14 +508,14 @@ export const LiveWorkout: React.FC<LiveWorkoutProps> = ({
                 <div className="grid grid-cols-2 gap-4">
                   <button
                     onClick={handleNextSet}
-                    className="flex items-center justify-center gap-2 bg-gym-card hover:bg-slate-800 border border-gym-border text-gym-text font-display font-semibold text-xs py-3 rounded-xl transition-all duration-200"
+                    className="flex items-center justify-center gap-2 bg-gym-card hover:bg-gym-cardAlt border border-gym-border text-gym-text font-display font-semibold text-xs py-3 rounded-xl transition-all duration-200"
                   >
                     <Plus className="w-4 h-4 text-gym-accentBlue" />
                     Next Set
                   </button>
                   <button
                     onClick={() => wsSend({ type: 'stop_session' })}
-                    className="flex items-center justify-center gap-2 bg-gym-card hover:bg-slate-800 border border-gym-border text-gym-text font-display font-semibold text-xs py-3 rounded-xl transition-all duration-200"
+                    className="flex items-center justify-center gap-2 bg-gym-card hover:bg-gym-cardAlt border border-gym-border text-gym-text font-display font-semibold text-xs py-3 rounded-xl transition-all duration-200"
                   >
                     <Pause className="w-4 h-4 text-gym-accentYellow" />
                     Pause Session
